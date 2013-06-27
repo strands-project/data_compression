@@ -26,7 +26,6 @@ add_library(rgb_decoder src/rgb_decoder.cpp)
 add_library(depth_encoder src/depth_encoder.cpp)
 add_library(depth_decoder src/depth_decoder.cpp)
 add_executable(test src/test.cpp)
-add_executable(avconv_test src/avconv_test.cpp)
 
 #################### Link libraries
 
@@ -46,5 +45,3 @@ target_link_libraries(depth_decoder video_decoder)
 target_link_libraries(test rgb_encoder rgb_decoder depth_encoder depth_decoder)
 
 target_link_libraries(test opencv_calib3d opencv_core opencv_flann opencv_highgui opencv_legacy opencv_nonfree opencv_photo opencv_ts opencv_videostab opencv_contrib opencv_features2d opencv_gpu  opencv_imgproc opencv_ml opencv_objdetect opencv_stitching opencv_video)
-
-target_link_libraries(avconv_test opencv_calib3d opencv_core opencv_flann opencv_highgui opencv_legacy opencv_nonfree opencv_photo opencv_ts opencv_videostab opencv_contrib opencv_features2d opencv_gpu  opencv_imgproc opencv_ml opencv_objdetect opencv_stitching opencv_video)
