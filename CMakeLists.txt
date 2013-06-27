@@ -8,21 +8,14 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 link_directories(${LIBRARY_OUTPUT_PATH})
 
-#################### Link VTK
-
-#set(VTK_DIR "/usr/lib/vtk-5.8")
-#find_package(VTK REQUIRED)
-#include(${VTK_USE_FILE})
-
 ################### Include directories
 
 include_directories(/opt/ros/groovy/include/opencv2)
 link_directories(/opt/ros/groovy/lib)
 
-include_directories(/home/nbore/Workspace/ffopencv2/libav/include)
-
-link_directories(/home/nbore/Workspace/ffopencv2/libav/lib)
-link_directories(/home/nbore/Workspace/ffopencv2/libav/bin)
+include_directories(${PROJECT_SOURCE_DIR}/libav/include)
+link_directories(${PROJECT_SOURCE_DIR}/libav/lib)
+link_directories(${PROJECT_SOURCE_DIR}/libav/bin)
 
 #################### Source files
 
@@ -32,7 +25,7 @@ add_library(rgb_encoder src/rgb_encoder.cpp)
 add_library(rgb_decoder src/rgb_decoder.cpp)
 add_library(depth_encoder src/depth_encoder.cpp)
 add_library(depth_decoder src/depth_decoder.cpp)
-add_executable(test src/test2.cpp)
+add_executable(test src/test.cpp)
 add_executable(avconv_test src/avconv_test.cpp)
 
 #################### Link libraries
