@@ -1,0 +1,11 @@
+time    reference
+uint32  packet_number
+int16   codec_ID
+int16   compressed_pix_fmt
+uint16  compressed_width
+uint16  compressed_height
+bool    keyframe
+uint8[] data
+int16   pix_fmt
+uint16  width
+uint16  height
