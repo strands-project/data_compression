@@ -47,17 +47,17 @@
   <build_depend>dynamic_reconfigure</build_depend>
   <build_depend>image_transport</build_depend>
   <build_depend>boost</build_depend>
-  <build_depend>libavcodec-extra</build_depend>
-  <build_depend>libswscale</build_depend>
-  <build_depend>libavutil-extra</build_depend>
+  <build_depend>libavcodec-extra-53</build_depend>
+  <build_depend>libswscale2</build_depend>
+  <build_depend>libavutil-extra-51</build_depend>
 
   <run_depend>genmsg</run_depend>
   <run_depend>dynamic_reconfigure</run_depend>
   <run_depend>image_transport</run_depend>
   <run_depend>boost</run_depend>
-  <run_depend>libavcodec-extra</run_depend>
-  <run_depend>libswscale</run_depend>
-  <run_depend>libavutil-extra</run_depend>
+  <run_depend>libavcodec-extra-53</run_depend>
+  <run_depend>libswscale2</run_depend>
+  <run_depend>libavutil-extra-51</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
