@@ -56,7 +56,6 @@ FIND_PATH (LIBAV_ROOT_DIR
         include/libavformat/avformat.h
         include/libavutil/avutil.h
         include/libswscale/swscale.h
-  PATHS ENV LIBAVROOT
   DOC "libav root directory")
 
 FIND_PATH (LIBAV_INCLUDE_DIR
