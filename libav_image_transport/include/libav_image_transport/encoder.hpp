@@ -31,10 +31,6 @@
 #include "libav_image_transport/libav.hpp"
 #include "libav_image_transport/config.hpp"
 
-#ifndef BACKPORT_LIBAV
-class AVPacket;
-#endif
-
 namespace libav_image_transport
 {
 
@@ -45,10 +41,6 @@ public:
 	typedef std::vector<Option> Config;
 
 	Encoder(void);
-
-#ifndef BACKPORT_LIBAV
-	~Encoder(void);
-#endif
 
 	void encode(const sensor_msgs::Image& image, Packet &packet,
 			int &got_packet);
@@ -65,8 +57,6 @@ private:
 #ifdef BACKPORT_LIBAV
 	const static int BUF_SIZE_ = 500000;
 	uint8_t buf_[BUF_SIZE_];
-#else
-	AVPacket* pkt_;
 #endif
 
 	int width_out_;

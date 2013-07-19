@@ -41,9 +41,6 @@ namespace libav_image_transport
 {
 
 Encoder::Encoder(void):
-#ifndef BACKPORT_LIBAV
-		pkt_(static_cast<AVPacket*>(av_malloc(sizeof(AVPacket)))),
-#endif
 		width_out_(-1), height_out_(-1), pix_fmt_out_(-1), codec_ID_(-1),
 		ref_(boost::posix_time::microsec_clock::universal_time())
 {
@@ -58,14 +55,6 @@ void Encoder::reconfigure(const int out_width, const int out_height,
 	codec_ID_ = codec_ID;
 	config_ = config;
 }
-
-#ifndef BACKPORT_LIBAV
-Encoder::~Encoder(void)
-{
-	if (pkt_)
-		av_freep (pkt_);
-}
-#endif
 
 void Encoder::init_encoder(const int out_width, const int out_height)
 {
@@ -117,6 +106,8 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 
 #ifdef BACKPORT_LIBAV
 	int packet_size;
+#else
+	AVPacket pkt;
 #endif
 
 	const int out_width = width_out_ == -1 ? image.width : width_out_;
@@ -195,7 +186,12 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 	else if (packet_size == 0)
 		got_packet = 0;
 #else
-	if (avcodec_encode_video2(codec_context_, pkt_, frame_out, &got_packet) < 0)
+	/* Initialize the packet */
+	av_init_packet(&pkt);
+	pkt.data = NULL;
+	pkt.size = 0;
+
+	if (avcodec_encode_video2(codec_context_, &pkt, frame_out, &got_packet) < 0)
 		throw std::runtime_error("Could not encode image.");
 #endif
 
@@ -215,8 +211,13 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 	packet.data.resize(packet_size);
 	packet.data.assign(buf_, buf_ + packet_size);
 #else
-	packet.data.resize(pkt_->size);
-	packet.data.assign(pkt_->data, pkt_->data + pkt_->size);
+	packet.data.resize(pkt.size);
+	packet.data.assign(pkt.data, pkt.data + pkt.size);
+
+	if (pkt.destruct)
+		pkt.destruct(&pkt);
+	else
+		av_free_packet(&pkt);
 #endif
 }
 
