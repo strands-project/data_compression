@@ -1,0 +1,21 @@
+<package>
+  <name>libav</name>
+  <version>9.8.0</version>
+  <description>The libav library.</description>
+  <maintainer email="dominique.hunziker@gmail.com">Dominique Hunziker</maintainer>
+  <license>GNU General Public License version 2</license>
+
+  <url type="website">http://libav.org/</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>libx264-dev</build_depend>
+  <build_depend>yasm</build_depend>
+
+  <run_depend>libx264-dev</run_depend>
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+
+</package>
