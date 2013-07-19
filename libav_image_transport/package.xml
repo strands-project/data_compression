@@ -2,7 +2,7 @@
 <package>
   <name>libav_image_transport</name>
   <version>0.0.1</version>
-  <description>The libav_image_transport package</description>
+  <description>A image transport plugin using libav to compress images.</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
@@ -47,17 +47,13 @@
   <build_depend>dynamic_reconfigure</build_depend>
   <build_depend>image_transport</build_depend>
   <build_depend>boost</build_depend>
-  <build_depend>libavcodec-extra-53</build_depend>
-  <build_depend>libswscale2</build_depend>
-  <build_depend>libavutil-extra-51</build_depend>
+  <build_depend>libav</build_depend>
 
   <run_depend>genmsg</run_depend>
   <run_depend>dynamic_reconfigure</run_depend>
   <run_depend>image_transport</run_depend>
   <run_depend>boost</run_depend>
-  <run_depend>libavcodec-extra-53</run_depend>
-  <run_depend>libswscale2</run_depend>
-  <run_depend>libavutil-extra-51</run_depend>
+  <run_depend>libav</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
