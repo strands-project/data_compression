@@ -21,13 +21,7 @@
 #ifndef LIBAV_IMAGE_TRANSPORT__LIBAV_BACKPORT_HPP_
 #define LIBAV_IMAGE_TRANSPORT__LIBAV_BACKPORT_HPP_
 
-#define __STDC_CONSTANT_MACROS
-#include <stdint.h>
-
-extern "C"
-{
-#include <libavcodec/avcodec.h>
-}
+class AVFrame;
 
 #define AVPixelFormat PixelFormat
 #define AVCodecID CodecID

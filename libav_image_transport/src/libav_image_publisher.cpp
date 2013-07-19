@@ -22,6 +22,11 @@
 
 #include <boost/bind.hpp>
 
+extern "C"
+{
+#include "libavcodec/avcodec.h"
+}
+
 #include "libav_image_transport/config.hpp"
 
 #ifdef BACKPORT_LIBAV

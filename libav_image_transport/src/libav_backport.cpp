@@ -18,12 +18,17 @@
  *     \author/s: Dominique Hunziker
  */
 
-#include "libav_image_transport/libav_backport.hpp"
+
+#define __STDC_CONSTANT_MACROS
+#include <stdint.h>
 
 extern "C"
 {
 #include <libavutil/mem.h>
+#include <libavcodec/avcodec.h>
 }
+
+#include "libav_image_transport/libav_backport.hpp"
 
 void avcodec_free_frame(AVFrame **frame)
 {

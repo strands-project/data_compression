@@ -25,10 +25,6 @@
 #include "libav_image_transport/config.hpp"
 #include "libav_image_transport/pix_fmt.hpp"
 
-#ifdef BACKPORT_LIBAV
-#include "libav_image_transport/libav_backport.hpp"
-#endif
-
 
 namespace libav_image_transport
 {
