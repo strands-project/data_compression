@@ -58,6 +58,7 @@ private:
 	// Queue event signaler
 	boost::condition_variable space_available_;
 	boost::condition_variable data_available_;
+	boost::condition_variable finished_;
 };
 
 } /* namespace libav_image_transport */

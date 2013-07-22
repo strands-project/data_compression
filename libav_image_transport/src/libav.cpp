@@ -67,7 +67,7 @@ Frame::Frame(const int width, const int height, const int format) :
 
 Frame::~Frame(void)
 {
-	av_freep(buf_);
+	av_freep(&buf_);
 	avcodec_free_frame(&frame_);
 }
 
@@ -129,16 +129,18 @@ void LibAV::init_libav(void)
 
 void LibAV::free_context(void)
 {
+	boost::mutex::scoped_lock lock(MUTEX);
+
 	if (codec_context_)
 	{
 		avcodec_close(codec_context_);
-		av_freep(codec_context_);
+		av_freep(&codec_context_);
 	}
 
 	if (sws_context_)
 	{
 		sws_freeContext(sws_context_);
-		av_freep(sws_context_);
+		sws_context_ = NULL;
 	}
 }
 

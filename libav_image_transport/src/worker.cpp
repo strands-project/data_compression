@@ -46,6 +46,8 @@ void Worker::stop(void)
 	keep_running_ = false;
 	space_available_.notify_all();
 	data_available_.notify_all();
+
+	finished_.wait(lock);
 }
 
 void Worker::schedule(const boost::function<void()> &task)
@@ -81,6 +83,8 @@ void Worker::run(void)
 
 		task();
 	}
+
+	finished_.notify_all();
 }
 
 } /* namespace libav_image_transport */
