@@ -41,8 +41,7 @@ namespace libav_image_transport
 {
 
 Encoder::Encoder(void):
-		width_out_(-1), height_out_(-1), pix_fmt_out_(-1), codec_ID_(-1),
-		ref_(boost::posix_time::microsec_clock::universal_time())
+		width_out_(-1), height_out_(-1), pix_fmt_out_(-1), codec_ID_(-1)
 {
 }
 
@@ -173,6 +172,9 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 	}
 
 	/* Store the PTS in the AVFrame */
+	if (ref_.is_not_a_date_time())
+		ref_ = image.header.stamp.toBoost();
+
 	boost::posix_time::time_duration pts = image.header.stamp.toBoost() - ref_;
 	frame_out->pts = pts.total_milliseconds();
 
@@ -205,12 +207,13 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 	packet.compressed_pix_fmt = pix_fmt_out_;
 	packet.compressed_width = codec_context_->width;
 	packet.compressed_height = codec_context_->height;
-	packet.keyframe = static_cast<bool>(codec_context_->coded_frame->key_frame);
 
 #ifdef BACKPORT_LIBAV
+	packet.keyframe = static_cast<bool>(codec_context_->coded_frame->key_frame);
 	packet.data.resize(packet_size);
 	packet.data.assign(buf_, buf_ + packet_size);
 #else
+	packet.keyframe = static_cast<bool>(pkt.flags);
 	packet.data.resize(pkt.size);
 	packet.data.assign(pkt.data, pkt.data + pkt.size);
 

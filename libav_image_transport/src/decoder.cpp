@@ -129,10 +129,11 @@ void Decoder::decode(const Packet::ConstPtr &packet,
 	}
 
 	/* Fill the AVPacket */
-	if (av_new_packet(&pkt, packet->data.size()))
+	if (av_new_packet(&pkt, packet->data.size())
+			|| pkt.size != packet->data.size())
 		throw std::runtime_error("Could not allocate AV packet data.");
 
-	memcpy(pkt.data, &packet->data[0], packet->data.size());
+	memcpy(pkt.data, &packet->data[0], pkt.size);
 
 	/* Decode packet */
 	if (avcodec_decode_video2(codec_context_, frame_in, &got_image, &pkt) < 0)
