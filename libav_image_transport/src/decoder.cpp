@@ -157,15 +157,11 @@ void Decoder::decode(const Packet::ConstPtr &packet,
 				frame_in->linesize, 0, frame_in->height, frame_out->data,
 				frame_out->linesize);
 
-		/* Intermediate results used ot store image */
-		size = frame_out->linesize[0] * frame_out->height;
-		boost::posix_time::time_duration pts(0, 0, 0,
-				frame_in->pkt_pts * (pts.ticks_per_second() / 1.e9));
-
 		/* Store image */
 		image->header.seq = packet->packet_number;
 		image->header.stamp = ros::Time::fromBoost(
-				packet->reference.toBoost() + pts);
+				packet->reference.toBoost()
+						+ boost::posix_time::milliseconds(frame_in->pkt_pts));
 		image->width = frame_out->width;
 		image->height = frame_out->height;
 		image->step = frame_out->linesize[0];
@@ -175,6 +171,7 @@ void Decoder::decode(const Packet::ConstPtr &packet,
 			throw std::runtime_error(
 					"Can not handle requested output pixel format.");
 
+		size = frame_out->linesize[0] * frame_out->height;
 		image->data.resize(size);
 		image->data.assign(frame_out->data[0], frame_out->data[0] + size);
 	}

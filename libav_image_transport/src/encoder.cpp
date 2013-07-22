@@ -174,7 +174,7 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 
 	/* Store the PTS in the AVFrame */
 	boost::posix_time::time_duration pts = image.header.stamp.toBoost() - ref_;
-	frame_out->pts = pts.ticks() * (1.e9 / pts.ticks_per_second());
+	frame_out->pts = pts.total_milliseconds();
 
 	/* Encode Image */
 #ifdef BACKPORT_LIBAV
