@@ -92,11 +92,11 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${LIBAV_INCLUDE_DIRS}
 )
 
 include_directories(SYSTEM
   ${Boost_INCLUDE_DIRS}
-  ${LIBAV_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
