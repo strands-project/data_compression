@@ -14,4 +14,4 @@ Installation
 
 2) Make packages
 
-    catkin_make
+    catkin_make_isolated
