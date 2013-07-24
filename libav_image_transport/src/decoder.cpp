@@ -22,7 +22,6 @@
 
 #include <iostream>
 #include <boost/make_shared.hpp>
-#include <boost/date_time/posix_time/posix_time_types.hpp>
 
 extern "C"
 {
@@ -59,8 +58,8 @@ void Decoder::init_decoder(const int in_width, const int in_height,
 
 	/* Set codec configuration */
 	codec_context_->pix_fmt = (enum AVPixelFormat) in_pix_fmt;
-	codec_context_->width = in_width;
-	codec_context_->height = in_height;
+	codec_context_->coded_width = in_width;
+	codec_context_->coded_height = in_height;
 
 	/* Open the codec context */
 	if (codec_open(codec_context_, codec, NULL) < 0)
@@ -108,13 +107,13 @@ void Decoder::decode(const Packet::ConstPtr &packet,
 	}
 
 	/* Check if the received packet is valid */
-	if (previous_packet_ + 1 != packet->packet_number)
+	if (previous_packet_ + 1 != packet->seq)
 	{
 		has_keyframe_ = false;
 		previous_packet_ = 0;
 	}
 
-	previous_packet_ = packet->packet_number;
+	previous_packet_ = packet->seq;
 
 	/* Check if there is a valid keyframe stored */
 	if (!has_keyframe_)
@@ -130,10 +129,13 @@ void Decoder::decode(const Packet::ConstPtr &packet,
 
 	/* Fill the AVPacket */
 	if (av_new_packet(&pkt, packet->data.size())
-			|| pkt.size != packet->data.size())
+			|| static_cast<unsigned int>(pkt.size) != packet->data.size())
 		throw std::runtime_error("Could not allocate AV packet data.");
 
 	memcpy(pkt.data, &packet->data[0], pkt.size);
+
+	pkt.pts = packet->pts;
+	pkt.flags = packet->keyframe ? AV_PKT_FLAG_KEY : 0;
 
 	/* Decode packet */
 	if (avcodec_decode_video2(codec_context_, frame_in, &got_image, &pkt) < 0)
@@ -158,11 +160,13 @@ void Decoder::decode(const Packet::ConstPtr &packet,
 				frame_in->linesize, 0, frame_in->height, frame_out->data,
 				frame_out->linesize);
 
+		/* Retrieve the PTS for the AVFrame */
+		image->header.stamp = ros::Time(
+				static_cast<uint32_t>(frame_in->pkt_pts >> 32),
+				static_cast<uint32_t>(frame_in->pkt_pts));
+
 		/* Store image */
-		image->header.seq = packet->packet_number;
-		image->header.stamp = ros::Time::fromBoost(
-				packet->reference.toBoost()
-						+ boost::posix_time::milliseconds(frame_in->pkt_pts));
+		image->header.seq = packet->seq;
 		image->width = frame_out->width;
 		image->height = frame_out->height;
 		image->step = frame_out->linesize[0];

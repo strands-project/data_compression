@@ -22,7 +22,6 @@
 
 #include <string.h>
 #include <boost/make_shared.hpp>
-#include <boost/date_time/posix_time/posix_time_types.hpp>
 
 extern "C"
 {
@@ -40,7 +39,7 @@ extern "C"
 namespace libav_image_transport
 {
 
-Encoder::Encoder(void):
+Encoder::Encoder(void) :
 		width_out_(-1), height_out_(-1), pix_fmt_out_(-1), codec_ID_(-1)
 {
 }
@@ -77,7 +76,7 @@ void Encoder::init_encoder(const int out_width, const int out_height)
 	codec_context_->width = out_width;
 	codec_context_->height = out_height;
 	codec_context_->time_base.den = 1;
-	codec_context_->time_base.num = 1000;
+	codec_context_->time_base.num = 1000000000;
 
 	opts = NULL;
 
@@ -109,8 +108,10 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 	AVPacket pkt;
 #endif
 
-	const int out_width = width_out_ == -1 ? image.width : width_out_;
-	const int out_height = height_out_ == -1 ? image.height : height_out_;
+	const int out_width =
+			width_out_ == -1 ? static_cast<int>(image.width) : width_out_;
+	const int out_height =
+			height_out_ == -1 ? static_cast<int>(image.height) : height_out_;
 
 	/* Get the pixel format of the image */
 	if (!pix_fmt_ros2libav(image.encoding, image.is_bigendian, pix_fmt))
@@ -130,7 +131,8 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 	}
 
 	/* Get local references to the AVFrame structs */
-	if (out_width == image.width && out_height == image.height
+	if (out_width == static_cast<int>(image.width)
+			&& out_height == static_cast<int>(image.height)
 			&& pix_fmt_out_ == pix_fmt)
 		frame_in = frame_out_->get_frame();
 	else
@@ -139,8 +141,9 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 	frame_out = frame_out_->get_frame();
 
 	/* Check if the input frame has to be reinitialized */
-	if (!frame_in || frame_in->width != image.width
-			|| frame_in->height != image.height || frame_in->format != pix_fmt)
+	if (!frame_in || frame_in->width != static_cast<int>(image.width)
+			|| frame_in->height != static_cast<int>(image.height)
+			|| frame_in->format != pix_fmt)
 	{
 		frame_in_ = boost::make_shared<Frame>(image.width, image.height,
 				pix_fmt);
@@ -148,7 +151,8 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 	}
 
 	/* Check if the image buffer length matches the expected values */
-	if (frame_in->linesize[0] * frame_in->height != image.step * image.height)
+	if (frame_in->linesize[0] * frame_in->height
+			!= static_cast<int>(image.step * image.height))
 		throw std::runtime_error("Image buffer size does not match.");
 
 	/* Copy image into AV compatible buffer */
@@ -172,11 +176,8 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 	}
 
 	/* Store the PTS in the AVFrame */
-	if (ref_.is_not_a_date_time())
-		ref_ = image.header.stamp.toBoost();
-
-	boost::posix_time::time_duration pts = image.header.stamp.toBoost() - ref_;
-	frame_out->pts = pts.total_milliseconds();
+	frame_out->pts = (static_cast<int64_t>(image.header.stamp.sec) << 32)
+			| image.header.stamp.nsec;
 
 	/* Encode Image */
 #ifdef BACKPORT_LIBAV
@@ -187,6 +188,8 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 		throw std::runtime_error("Could not encode image.");
 	else if (packet_size == 0)
 		got_packet = 0;
+	else
+		got_packet = 1;
 #else
 	/* Initialize the packet */
 	av_init_packet(&pkt);
@@ -201,19 +204,20 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 		return;
 
 	/* Fill the packet message */
-	packet.reference = ros::Time::fromBoost(ref_);
-	packet.packet_number = ++packet_number_;
 	packet.codec_ID = codec_context_->codec_id;
+	packet.seq = ++packet_number_;
 	packet.compressed_pix_fmt = pix_fmt_out_;
 	packet.compressed_width = codec_context_->width;
 	packet.compressed_height = codec_context_->height;
 
 #ifdef BACKPORT_LIBAV
+	packet.pts = codec_context_->coded_frame->pts;
 	packet.keyframe = static_cast<bool>(codec_context_->coded_frame->key_frame);
 	packet.data.resize(packet_size);
 	packet.data.assign(buf_, buf_ + packet_size);
 #else
-	packet.keyframe = static_cast<bool>(pkt.flags);
+	packet.pts = pkt.pts;
+	packet.keyframe = pkt.flags & AV_PKT_FLAG_KEY ? true : false;
 	packet.data.resize(pkt.size);
 	packet.data.assign(pkt.data, pkt.data + pkt.size);
 

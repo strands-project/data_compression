@@ -23,7 +23,6 @@
 
 #include <vector>
 #include <utility>
-#include <boost/date_time/posix_time/ptime.hpp>
 
 #include "sensor_msgs/Image.h"
 #include "libav_image_transport/Packet.h"
@@ -66,8 +65,6 @@ private:
 	Config config_;
 
 	uint32_t packet_number_;
-
-	boost::posix_time::ptime ref_;
 };
 
 } /* namespace libav_image_transport */
