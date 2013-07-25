@@ -40,13 +40,18 @@ namespace libav_image_transport
 {
 
 Encoder::Encoder(void) :
-		width_out_(-1), height_out_(-1), pix_fmt_out_(-1), codec_ID_(-1)
+		width_out_(-1), height_out_(-1), pix_fmt_out_(-1), codec_ID_(-1), packet_number_(
+				0)
 {
 }
 
 void Encoder::reconfigure(const int out_width, const int out_height,
 		const int out_pix_fmt, const int codec_ID, const Config &config)
 {
+	// Delete old context,
+	// i.e. force the encoder to create a new context with new configuration
+	free_context();
+
 	width_out_ = out_width;
 	height_out_ = out_height;
 	pix_fmt_out_ = out_pix_fmt;
@@ -124,30 +129,32 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 
 	/* Check if the codec context has to be reinitialized */
 	if (!codec_context_ || out_width != codec_context_->width
-			|| codec_context_->height != out_height)
+			|| out_height != codec_context_->height)
 	{
 		free_context();
 		init_encoder(out_width, out_height);
 	}
 
 	/* Get local references to the AVFrame structs */
+	frame_out = frame_out_->get_frame();
+
 	if (out_width == static_cast<int>(image.width)
 			&& out_height == static_cast<int>(image.height)
 			&& pix_fmt_out_ == pix_fmt)
 		frame_in = frame_out_->get_frame();
 	else
+	{
+		/* Check if the input frame has to be reinitialized */
 		frame_in = frame_in_ ? frame_in_->get_frame() : NULL;
 
-	frame_out = frame_out_->get_frame();
-
-	/* Check if the input frame has to be reinitialized */
-	if (!frame_in || frame_in->width != static_cast<int>(image.width)
-			|| frame_in->height != static_cast<int>(image.height)
-			|| frame_in->format != pix_fmt)
-	{
-		frame_in_ = boost::make_shared<Frame>(image.width, image.height,
-				pix_fmt);
-		frame_in = frame_in_->get_frame();
+		if (!frame_in_ || frame_in->width != static_cast<int>(image.width)
+				|| frame_in->height != static_cast<int>(image.height)
+				|| frame_in->format != pix_fmt)
+		{
+			frame_in_ = boost::make_shared<Frame>(image.width, image.height,
+					pix_fmt);
+			frame_in = frame_in_->get_frame();
+		}
 	}
 
 	/* Check if the image buffer length matches the expected values */
@@ -179,8 +186,8 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 	frame_out->pts = (static_cast<int64_t>(image.header.stamp.sec) << 32)
 			| image.header.stamp.nsec;
 
-	/* Encode Image */
 #ifdef BACKPORT_LIBAV
+	/* Encode Image */
 	packet_size = avcodec_encode_video(codec_context_, buf_, BUF_SIZE_,
 			frame_out);
 
@@ -196,6 +203,7 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 	pkt.data = NULL;
 	pkt.size = 0;
 
+	/* Encode Image */
 	if (avcodec_encode_video2(codec_context_, &pkt, frame_out, &got_packet) < 0)
 		throw std::runtime_error("Could not encode image.");
 #endif
@@ -221,6 +229,7 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 	packet.data.resize(pkt.size);
 	packet.data.assign(pkt.data, pkt.data + pkt.size);
 
+	/* Free the packet data */
 	if (pkt.destruct)
 		pkt.destruct(&pkt);
 	else

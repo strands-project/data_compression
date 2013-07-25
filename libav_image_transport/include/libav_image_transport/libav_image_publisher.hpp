@@ -25,7 +25,7 @@
 #include "image_transport/simple_publisher_plugin.h"
 
 #include "libav_image_transport/Packet.h"
-#include "libav_image_transport/libav_publisherConfig.h"
+#include "libav_image_transport/libavPublisherConfig.h"
 
 #include "libav_image_transport/worker.hpp"
 #include "libav_image_transport/encoder.hpp"
@@ -52,7 +52,7 @@ public:
 
 	virtual std::string getTransportName() const
 	{
-		return "libav_packet";
+		return "libav";
 	}
 
 protected:
@@ -68,7 +68,7 @@ protected:
 	virtual void encode(const sensor_msgs::Image& image,
 			const PublishFn& publish_fn) const;
 
-	typedef libav_image_transport::libav_publisherConfig Config;
+	typedef libav_image_transport::libavPublisherConfig Config;
 	typedef dynamic_reconfigure::Server<Config> ReconfigureServer;
 
 	void reconfigure(Config& config, uint32_t level);

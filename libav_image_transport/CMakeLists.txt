@@ -22,7 +22,10 @@ endif(${LIBAV_VERSION_MAJOR} LESS 9)
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
 # catkin_python_setup()
 
-generate_dynamic_reconfigure_options(cfg/libav_publisher.cfg)
+generate_dynamic_reconfigure_options(
+  cfg/libavPublisher.cfg
+  cfg/libavSubscriber.cfg
+)
 
 configure_file(
   "${PROJECT_SOURCE_DIR}/cfg/config.hpp.in"

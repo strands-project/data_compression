@@ -40,6 +40,24 @@ extern "C"
 namespace libav_image_transport
 {
 
+Decoder::Decoder(void) :
+		has_keyframe_(false), previous_packet_(0), width_out_(-1), height_out_(
+				-1), pix_fmt_out_(-1)
+{
+}
+
+void Decoder::reconfigure(const int out_width, const int out_height,
+		const int out_pix_fmt)
+{
+	// Delete old output frame,
+	// i.e. force the decoder to create a new frame with new configuration
+	frame_out_.reset();
+
+	width_out_ = out_width;
+	height_out_ = out_height;
+	pix_fmt_out_ = out_pix_fmt;
+}
+
 void Decoder::init_decoder(const int in_width, const int in_height,
 		const int in_pix_fmt, const int codec_ID)
 {
@@ -81,6 +99,10 @@ void Decoder::decode(const Packet::ConstPtr &packet,
 	AVFrame* frame_in;
 	AVFrame* frame_out;
 
+	const int out_width = width_out_ == -1 ? packet->width : width_out_;
+	const int out_height = height_out_ == -1 ? packet->height : height_out_;
+	const int out_pix_fmt = pix_fmt_out_ == -1 ? packet->pix_fmt : pix_fmt_out_;
+
 	/* Check if the codec context has to be reinitialized */
 	if (!codec_context_ || packet->codec_ID != codec_context_->codec_id
 			|| packet->compressed_pix_fmt != codec_context_->pix_fmt
@@ -94,24 +116,29 @@ void Decoder::decode(const Packet::ConstPtr &packet,
 
 	/* Get local references to the AVFrame structs */
 	frame_in = frame_in_->get_frame();
-	frame_out = frame_out_ ? frame_out_->get_frame() : NULL;
 
-	/* Check if the output frame has to be reinitialized */
-	if (!frame_out || frame_out->width != packet->width
-			|| frame_out->height != packet->height
-			|| frame_out->format != packet->pix_fmt)
+	if (out_width == packet->compressed_width
+			&& out_height == packet->compressed_height
+			&& out_pix_fmt == packet->compressed_pix_fmt)
+		frame_out = frame_in_->get_frame();
+	else
 	{
-		frame_out_ = boost::make_shared<Frame>(packet->width, packet->height,
-				packet->pix_fmt);
-		frame_out = frame_out_->get_frame();
+		/* Check if the output frame has to be reinitialized */
+		frame_out = frame_out_ ? frame_out_->get_frame() : NULL;
+
+		if (!frame_out_ || frame_out->width != out_width
+				|| frame_out->height != out_height
+				|| frame_out->format != out_pix_fmt)
+		{
+			frame_out_ = boost::make_shared<Frame>(out_width, out_height,
+					out_pix_fmt);
+			frame_out = frame_out_->get_frame();
+		}
 	}
 
 	/* Check if the received packet is valid */
 	if (previous_packet_ + 1 != packet->seq)
-	{
 		has_keyframe_ = false;
-		previous_packet_ = 0;
-	}
 
 	previous_packet_ = packet->seq;
 
@@ -142,9 +169,15 @@ void Decoder::decode(const Packet::ConstPtr &packet,
 		std::cout << "[decode] Could no decode packet." << std::endl;
 
 	/* Free the packet data */
-	av_free_packet(&pkt);
+	if (pkt.destruct)
+		pkt.destruct(&pkt);
+	else
+		av_free_packet(&pkt);
 
-	if (got_image)
+	if (!got_image)
+		return;
+
+	if (frame_in != frame_out)
 	{
 		/* Get SWS Context */
 		sws_context_ = sws_getCachedContext(sws_context_, frame_in->width,
@@ -156,30 +189,29 @@ void Decoder::decode(const Packet::ConstPtr &packet,
 			throw std::runtime_error("Could not initialize sws context.");
 
 		/* Transform image */
-		sws_scale(sws_context_, (const uint8_t* const *) frame_in->data,
-				frame_in->linesize, 0, frame_in->height, frame_out->data,
-				frame_out->linesize);
-
-		/* Retrieve the PTS for the AVFrame */
-		image->header.stamp = ros::Time(
-				static_cast<uint32_t>(frame_in->pkt_pts >> 32),
-				static_cast<uint32_t>(frame_in->pkt_pts));
-
-		/* Store image */
-		image->header.seq = packet->seq;
-		image->width = frame_out->width;
-		image->height = frame_out->height;
-		image->step = frame_out->linesize[0];
-
-		if (!pix_fmt_libav2ros(frame_out->format, image->encoding,
-				image->is_bigendian))
-			throw std::runtime_error(
-					"Can not handle requested output pixel format.");
-
-		size = frame_out->linesize[0] * frame_out->height;
-		image->data.resize(size);
-		image->data.assign(frame_out->data[0], frame_out->data[0] + size);
+		sws_scale(sws_context_, frame_in->data, frame_in->linesize, 0,
+				frame_in->height, frame_out->data, frame_out->linesize);
 	}
+
+	/* Retrieve the PTS for the AVFrame */
+	image->header.stamp = ros::Time(
+			static_cast<uint32_t>(frame_in->pkt_pts >> 32),
+			static_cast<uint32_t>(frame_in->pkt_pts));
+
+	/* Store image */
+	image->header.seq = packet->seq;
+	image->width = frame_out->width;
+	image->height = frame_out->height;
+	image->step = frame_out->linesize[0];
+
+	if (!pix_fmt_libav2ros(frame_out->format, image->encoding,
+			image->is_bigendian))
+		throw std::runtime_error(
+				"Can not handle requested output pixel format.");
+
+	size = frame_out->linesize[0] * frame_out->height;
+	image->data.resize(size);
+	image->data.assign(frame_out->data[0], frame_out->data[0] + size);
 }
 
 } /* namespace libav_image_transport */

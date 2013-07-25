@@ -96,7 +96,7 @@ void LibAVImagePublisher::reconfigure(Config& config, uint32_t level)
 		codec_ID = AV_CODEC_ID_FFV1;
 	else
 		throw std::runtime_error(
-				"Invalid codec (" + config.codec + ") encountered.");
+				"Invalid codec (" + config.codec + ") encountered");
 
 	if (config.pixel_format == "rgb")
 		pix_fmt = AV_PIX_FMT_RGB24;

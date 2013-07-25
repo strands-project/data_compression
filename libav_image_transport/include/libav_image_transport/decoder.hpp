@@ -32,8 +32,13 @@ namespace libav_image_transport
 class Decoder: public LibAV
 {
 public:
+	Decoder(void);
+
 	void decode(const Packet::ConstPtr &packet, sensor_msgs::ImagePtr& image,
 			int &got_image);
+
+	void reconfigure(const int out_width, const int out_height,
+			const int out_pix_fmt);
 
 private:
 	void init_decoder(const int in_width, const int in_height,
@@ -44,6 +49,10 @@ private:
 
 	bool has_keyframe_;
 	uint32_t previous_packet_;
+
+	int width_out_;
+	int height_out_;
+	int pix_fmt_out_;
 };
 
 } /* namespace libav_image_transport */

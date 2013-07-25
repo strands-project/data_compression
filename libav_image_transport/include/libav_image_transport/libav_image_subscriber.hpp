@@ -21,9 +21,11 @@
 #ifndef LIBAV_IMAGE_TRANSPORT__LIBAV_IMAGE_SUBSCRIBER_HPP_
 #define LIBAV_IMAGE_TRANSPORT__LIBAV_IMAGE_SUBSCRIBER_HPP_
 
+#include "dynamic_reconfigure/server.h"
 #include "image_transport/simple_subscriber_plugin.h"
 
 #include "libav_image_transport/Packet.h"
+#include "libav_image_transport/libavSubscriberConfig.h"
 
 #include "libav_image_transport/worker.hpp"
 #include "libav_image_transport/decoder.hpp"
@@ -50,16 +52,28 @@ public:
 
 	virtual std::string getTransportName() const
 	{
-		return "libav_packet";
+		return "libav";
 	}
 
 protected:
+	// Overridden to set up reconfigure server
+	virtual void subscribeImpl(ros::NodeHandle& nh,
+			const std::string& base_topic, uint32_t queue_size,
+			const Callback& callback, const ros::VoidPtr& tracked_object,
+			const image_transport::TransportHints& transport_hints);
+
 	virtual void internalCallback(const Packet::ConstPtr &message,
 			const Callback& user_cb);
 	virtual void decode(const Packet::ConstPtr &packet,
 			const Callback& user_cb);
 
+	typedef libav_image_transport::libavSubscriberConfig Config;
+	typedef dynamic_reconfigure::Server<Config> ReconfigureServer;
+
+	void reconfigure(Config& config, uint32_t level);
+
 	boost::shared_ptr<Worker> worker_;
+	boost::shared_ptr<ReconfigureServer> reconfigure_server_;
 	boost::shared_ptr<Decoder> decoder_;
 };
 
