@@ -80,7 +80,7 @@ bool pix_fmt_libav2ros(const int pix_fmt, std::string &encoding,
 		encoding = sensor_msgs::image_encodings::BGR16;
 		break;
 
-	case AV_PIX_FMT_YUYV422:
+	case AV_PIX_FMT_UYVY422:
 		encoding = sensor_msgs::image_encodings::YUV422;
 		break;
 
@@ -128,7 +128,7 @@ bool pix_fmt_ros2libav(const std::string &encoding,
 			pix_fmt = AV_PIX_FMT_BGR48LE;
 	}
 	else if (encoding == sensor_msgs::image_encodings::YUV422)
-		pix_fmt = AV_PIX_FMT_YUYV422;
+		pix_fmt = AV_PIX_FMT_UYVY422;
 	else
 		return false;
 

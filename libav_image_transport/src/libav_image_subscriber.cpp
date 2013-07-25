@@ -87,7 +87,7 @@ void LibAVImageSubscriber::reconfigure(Config& config, uint32_t level)
 	else if (config.pixel_format == "bgr")
 		pix_fmt = AV_PIX_FMT_BGR24;
 	else if (config.pixel_format == "yuv")
-		pix_fmt = AV_PIX_FMT_YUV420P;
+		pix_fmt = AV_PIX_FMT_UYVY422;
 	else if (config.pixel_format == "gray8")
 		pix_fmt = AV_PIX_FMT_GRAY8;
 	else if (config.pixel_format == "gray16")
