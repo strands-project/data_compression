@@ -5,37 +5,37 @@
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
-  try
-  {
-    cv::imshow("view", cv_bridge::toCvShare(msg, "bgr8")->image);
-  }
-  catch (cv_bridge::Exception& e)
-  {
-    ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
-  }
+	try
+	{
+		cv::imshow("view", cv_bridge::toCvShare(msg, "bgr8")->image);
+	} catch (cv_bridge::Exception& e)
+	{
+		ROS_ERROR("Could not convert from '%s' to 'bgr8'.",
+				msg->encoding.c_str());
+	}
 }
 
 int main(int argc, char **argv)
 {
-  if (argc < 2)
-  {
-    printf("Usage: viewer [ROS topic (image transport)]\n");
-    return 0;
-  }
+	if (argc < 2)
+	{
+		printf("Usage: viewer [ROS topic (image transport)]\n");
+		return 0;
+	}
 
-  ros::init(argc, argv, "image_listener");
-  ros::NodeHandle nh;
-  
-  cv::namedWindow("view");
-  cv::startWindowThread();
-  
-  image_transport::ImageTransport it(nh);
-  image_transport::Subscriber sub = it.subscribe(argv[1], 1, imageCallback);
-  
-  ros::spin();
-  
-  cv::destroyWindow("view");
-  
-  return 0;
+	ros::init(argc, argv, "image_listener");
+	ros::NodeHandle nh;
+
+	cv::namedWindow("view");
+	cv::startWindowThread();
+
+	image_transport::ImageTransport it(nh);
+	image_transport::Subscriber sub = it.subscribe(argv[1], 1, imageCallback);
+
+	ros::spin();
+
+	cv::destroyWindow("view");
+
+	return 0;
 }
 
