@@ -19,7 +19,8 @@ def callback(sc, impath, nbr):
         counter += 1
     depthimages = os.path.join(impath, "tempdepth%d.png")
     avconv = os.path.abspath(os.path.join(os.path.expanduser('~'), "libav", "bin", "avconv"))
-    os.system("%s -r 30 -i %s -pix_fmt gray16 -vsync 1 -vcodec ffv1 -coder 1 depth%d.mov" % (avconv, depthimages, nbr))
+    video = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "videos", "depth%d.mov" % nbr))
+    os.system("%s -r 30 -i %s -pix_fmt gray16 -vsync 1 -vcodec ffv1 -coder 1 %s" % (avconv, depthimages, video))
     for f in temps:
         os.remove(f)
 

@@ -8,8 +8,9 @@
 
 namespace cv_saver {
 
-	void init_time()
+	void init_saver(const std::string& path)
 	{
+        impath = path;
 		boost::posix_time::ptime time = boost::posix_time::microsec_clock::local_time();
 		boost::posix_time::time_duration duration(time.time_of_day());
 		start = duration.total_milliseconds();
@@ -28,14 +29,14 @@ namespace cv_saver {
 		}
 		boost::posix_time::ptime time = boost::posix_time::microsec_clock::local_time();
 	    boost::posix_time::time_duration duration(time.time_of_day());
-	    char buffer[50];
+	    char buffer[250];
 	    if (cv_img_boost_ptr->image.type() == CV_16UC1) {
 	    	std::cout << "Received a depth image!" << std::endl;
-			sprintf(buffer, "images/depth%06d.png", int(duration.total_milliseconds() - start));
+			sprintf(buffer, "%s/depth%06d.png", impath.c_str(), int(duration.total_milliseconds() - start));
 		}
 		else if (cv_img_boost_ptr->image.type() == CV_8UC3) {
 			std::cout << "Received an RGB image!" << std::endl;
-			sprintf(buffer, "images/rgb%06d.png", int(duration.total_milliseconds() - start));
+			sprintf(buffer, "%s/rgb%06d.png", impath.c_str(), int(duration.total_milliseconds() - start));
 		}
 		//std::cout << cv_img_boost_ptr->image.type() << std::endl;
 		//std::cout << CV_32FC1 << std::endl;
