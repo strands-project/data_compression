@@ -31,11 +31,11 @@ namespace cv_saver {
 	    char buffer[50];
 	    if (cv_img_boost_ptr->image.type() == CV_16UC1) {
 	    	std::cout << "Received a depth image!" << std::endl;
-			sprintf(buffer, "images/depth_%06d.png", int(duration.total_milliseconds() - start));
+			sprintf(buffer, "images/depth%06d.png", int(duration.total_milliseconds() - start));
 		}
 		else if (cv_img_boost_ptr->image.type() == CV_8UC3) {
 			std::cout << "Received an RGB image!" << std::endl;
-			sprintf(buffer, "images/rgb_%06d.png", int(duration.total_milliseconds() - start));
+			sprintf(buffer, "images/rgb%06d.png", int(duration.total_milliseconds() - start));
 		}
 		//std::cout << cv_img_boost_ptr->image.type() << std::endl;
 		//std::cout << CV_32FC1 << std::endl;
