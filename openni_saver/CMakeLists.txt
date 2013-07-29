@@ -4,7 +4,7 @@ project(openni_saver)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS roscpp)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -44,14 +44,13 @@ find_package(catkin REQUIRED)
 ###################################
 ## The catkin_package macro generates cmake config files for your package
 ## Declare things to be passed to dependent projects
-## INCLUDE_DIRS: uncomment this if you package contains header files
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES openni_saver
-#  CATKIN_DEPENDS other_catkin_pkg
+   INCLUDE_DIRS include
+#  LIBRARIES xtion_saver
+#  CATKIN_DEPENDS roscpp
 #  DEPENDS system_lib
 )
 
@@ -61,24 +60,43 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-# include_directories(include)
+include_directories(include
+  ${catkin_INCLUDE_DIRS}
+)
+
+include_directories(/opt/ros/groovy/include/opencv2)
+include_directories(/opt/ros/groovy/include/cv_bridge)
+link_directories(/opt/ros/groovy/lib)
 
 ## Declare a cpp library
-# add_library(openni_saver
-#   src/${PROJECT_NAME}/openni_saver.cpp
-# )
+add_library(cv_saver src/cv_saver.cpp)
 
 ## Declare a cpp executable
-# add_executable(openni_saver_node src/openni_saver_node.cpp)
+# add_executable(xtion_saver src/xtion_saver.cpp)
+add_executable(depth_saver_node src/depth_saver_node.cpp)
+add_executable(rgb_saver_node src/rgb_saver_node.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(openni_saver_node openni_saver_generate_messages_cpp)
+# add_dependencies(xtion_saver_node xtion_saver_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(openni_saver_node
-#   ${catkin_LIBRARIES}
-# )
+#target_link_libraries(cv_saver
+ #  ${catkin_LIBRARIES}
+#)
+
+target_link_libraries(depth_saver_node
+   ${catkin_LIBRARIES}
+)
+
+target_link_libraries(rgb_saver_node
+   ${catkin_LIBRARIES}
+)
+
+target_link_libraries(cv_saver opencv_calib3d opencv_core opencv_flann opencv_highgui opencv_legacy opencv_nonfree opencv_photo opencv_ts opencv_videostab opencv_contrib opencv_features2d opencv_gpu  opencv_imgproc opencv_ml opencv_objdetect opencv_stitching opencv_video cv_bridge)
+
+target_link_libraries(depth_saver_node cv_saver)
+target_link_libraries(rgb_saver_node cv_saver)
 
 #############
 ## Install ##
@@ -95,7 +113,7 @@ catkin_package(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS openni_saver openni_saver_node
+# install(TARGETS xtion_saver xtion_saver_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -120,7 +138,7 @@ catkin_package(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_openni_saver.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_xtion_saver.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
