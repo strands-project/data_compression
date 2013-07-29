@@ -1,0 +1,7 @@
+<launch>
+    <node pkg="openni_saver" type="depth_saver_node" name="depth_saver_node" output="screen">
+        <param name="image_folder" value="$(find openni_saver)/images"/>
+    </node>
+	<node pkg="libav_compressor" type="bulk_compressor.py" name="bulk_compressor" args="$(find openni_saver)/images" output="screen"/>
+e>
+</launch>
