@@ -3,10 +3,11 @@ import sched, time, os, sys
 def callback(sc, impath, nbr):
     sc.enter(20, 1, callback, (sc, impath, nbr+1))
     print "Compressing..."
-
     temps = []
-    counter = 0;
-    for f in os.listdir(impath):
+    counter = 0
+    flist = os.listdir(impath)
+    flist.sort(key = lambda s: (s[:-11], int(s[-11:-4])))
+    for f in flist:
         if not os.path.isfile(os.path.join(impath, f)):
             continue
         if f[:5] != "depth":
@@ -15,11 +16,9 @@ def callback(sc, impath, nbr):
         os.rename(os.path.join(impath, f), tempname)
         temps.append(tempname)
         counter += 1
-
     depthimages = os.path.join(impath, "tempdepth%d.png")
     avconv = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "libav", "bin", "avconv"))
     os.system("%s -r 30 -i %s -pix_fmt gray16 -vsync 1 -vcodec ffv1 -coder 1 depth%d.mov" % (avconv, depthimages, nbr))
-
     for f in temps:
         os.remove(f)
 
