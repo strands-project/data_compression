@@ -1,4 +1,4 @@
 <launch>
-	<node pkg="libav_compressor" type="test_quality" name="test_quality" args="$(find openni_saver)/images $(find libav_compressor)/images" output="screen"/>
+	<node pkg="libav_compressor" type="test_quality" name="test_quality" args="$(find libav_compressor)/debug $(find libav_compressor)/images" output="screen"/>
 e>
 </launch>
