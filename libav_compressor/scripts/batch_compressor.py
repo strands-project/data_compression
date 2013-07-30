@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import sched, time, os, sys
+import shutil # for debugging, saving the original images
 
 def callback(sc, impath, nbr):
     sc.enter(20, 1, callback, (sc, impath, nbr+1))
@@ -14,7 +15,8 @@ def callback(sc, impath, nbr):
         if f[:5] != "depth":
             continue
         tempname = os.path.join(impath, "tempdepth%06d.png" % counter)
-        os.rename(os.path.join(impath, f), tempname)
+        #os.rename(os.path.join(impath, f), tempname)
+        shutil.copy(os.path.join(impath, f), tempname) # for debugging, saving the original images
         temps.append(tempname)
         counter += 1
     depthimages = os.path.join(impath, "tempdepth%06d.png")
