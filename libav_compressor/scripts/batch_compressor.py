@@ -13,11 +13,11 @@ def callback(sc, impath, nbr):
             continue
         if f[:5] != "depth":
             continue
-        tempname = os.path.join(impath, "tempdepth%d.png" % counter)
+        tempname = os.path.join(impath, "tempdepth%06d.png" % counter)
         os.rename(os.path.join(impath, f), tempname)
         temps.append(tempname)
         counter += 1
-    depthimages = os.path.join(impath, "tempdepth%d.png")
+    depthimages = os.path.join(impath, "tempdepth%06d.png")
     avconv = os.path.abspath(os.path.join(os.path.expanduser('~'), "libav", "bin", "avconv"))
     video = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "videos", "depth%06d.mov" % nbr))
     os.system("%s -r 30 -i %s -pix_fmt gray16 -vsync 1 -vcodec ffv1 -coder 1 %s" % (avconv, depthimages, video))
