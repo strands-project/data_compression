@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import sched, time, os, sys
+#import shutil # for debugging, saving the original images
 
 def callback(sc, impath, nbr):
     sc.enter(20, 1, callback, (sc, impath, nbr+1))
@@ -15,6 +16,7 @@ def callback(sc, impath, nbr):
             continue
         tempname = os.path.join(impath, "tempdepth%06d.png" % counter)
         os.rename(os.path.join(impath, f), tempname)
+        #shutil.copy(tempname, os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "debug", f))) # for debugging, saving the original images
         temps.append(tempname)
         counter += 1
     depthimages = os.path.join(impath, "tempdepth%06d.png")
@@ -25,14 +27,10 @@ def callback(sc, impath, nbr):
         os.remove(f)
 
 def batch_compressor(argv):
-    #rospy.init_node("batch_compressor")
     s = sched.scheduler(time.time, time.sleep)
     nbr = 0
     s.enter(20, 1, callback, (s, argv, nbr))
     s.run()
 
 if __name__ == "__main__":
-    #try:
     batch_compressor(sys.argv[1])
-    #except rospy.ROSInterruptException:
-        #pass
