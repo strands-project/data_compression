@@ -47,6 +47,14 @@ int main(int argc, char** argv) {
     std::sort(entries1.begin(), entries1.end());
     std::sort(entries2.begin(), entries2.end());
 
+    for (int i = 0; i < entries1.size(); ++i) {
+        std::cout << entries1[i]  << std::endl;
+    }
+    std::cout << "-------------------" << std::endl;
+    /*for (int i = 0; i < entries2.size(); ++i) {
+        std::cout << entries2[i]  << std::endl;
+    }*/
+
 	std::string depthName("depth");
     for (int i = 2; i < entries2.size(); ++i) {
     	std::string file1 = entries1[i];
