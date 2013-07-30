@@ -1,7 +1,7 @@
 data_compression
 ================
 
-Video encoding for 8 bit RGB images, 16 bit grayscale depth images and possibly more. The package is laid out as a catkin workspace.
+Video encoding for 8 bit RGB images, 16 bit grayscale depth images and possibly more. The package is laid out as a catkin package.
 
 Here you can find information for installing libav 9, which is required to compile this: https://github.com/strands-project/data_compression/wiki/Setup-libav
 
