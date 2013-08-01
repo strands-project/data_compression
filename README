@@ -9,9 +9,6 @@ Installation
     libav_image_transport:
         sudo apt-get install ros-groovy-dynamic-reconfigure ros-groovy-image-transport
 
-    image_transport_viewer:
-        sudo apt-get install ros-groovy-cv-bridge ros-groovy-image-transport
-
 2) Make packages
 
     catkin_make_isolated
