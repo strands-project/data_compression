@@ -40,7 +40,10 @@ namespace cv_saver {
 		}
 		//std::cout << cv_img_boost_ptr->image.type() << std::endl;
 		//std::cout << CV_32FC1 << std::endl;
-		cv::imwrite(buffer, cv_img_boost_ptr->image);
+        std::vector<int> compression;
+        compression.push_back(CV_IMWRITE_PNG_COMPRESSION);
+        compression.push_back(0);
+		cv::imwrite(buffer, cv_img_boost_ptr->image, compression);
 	}
 
 }
