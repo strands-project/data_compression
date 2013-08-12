@@ -75,6 +75,7 @@ add_library(cv_saver src/cv_saver.cpp)
 # add_executable(xtion_saver src/xtion_saver.cpp)
 add_executable(depth_saver_node src/depth_saver_node.cpp)
 add_executable(rgb_saver_node src/rgb_saver_node.cpp)
+add_executable(synch_saver_node src/synch_saver_node.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -93,10 +94,15 @@ target_link_libraries(rgb_saver_node
    ${catkin_LIBRARIES}
 )
 
+target_link_libraries(synch_saver_node
+   ${catkin_LIBRARIES}
+)
+
 target_link_libraries(cv_saver opencv_calib3d opencv_core opencv_flann opencv_highgui opencv_legacy opencv_nonfree opencv_photo opencv_ts opencv_videostab opencv_contrib opencv_features2d opencv_gpu  opencv_imgproc opencv_ml opencv_objdetect opencv_stitching opencv_video cv_bridge)
 
 target_link_libraries(depth_saver_node cv_saver)
 target_link_libraries(rgb_saver_node cv_saver)
+target_link_libraries(synch_saver_node cv_saver)
 
 #############
 ## Install ##
