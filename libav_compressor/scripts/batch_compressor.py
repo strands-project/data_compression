@@ -29,7 +29,7 @@ def callback(sc, impath, nbr):
     rgbimages = os.path.join(impath, "temprgb%06d.png")
     avconv = os.path.abspath(os.path.join(os.path.expanduser('~'), "libav", "bin", "avconv"))
     depthvideo = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "videos", "depth%06d.mov" % nbr))
-    rgbvideo = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "videos", "rgb%06d.mov" % nbr))
+    rgbvideo = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "videos", "rgb%06d.mov" % nbr)) # maybe this has to be mkv??
     os.system("%s -r 30 -i %s -pix_fmt gray16 -vsync 1 -vcodec ffv1 -coder 1 %s" % (avconv, depthimages, depthvideo))
     os.system("%s -r 30 -i %s -c:v libx264 -preset ultrafast -crf 0 %s" % (avconv, rgbimages, rgbvideo))
     for f in temps:
