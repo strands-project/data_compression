@@ -3,7 +3,7 @@
 
 #include <sensor_msgs/Image.h>
 #include <string>
-#include <opencv.hpp>
+#include <opencv2/opencv.hpp>
 
 namespace cv_saver {
 
