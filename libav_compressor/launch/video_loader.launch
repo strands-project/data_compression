@@ -1,0 +1,4 @@
+<launch>
+	<node pkg="libav_compressor" type="batch_decompressor.py" name="batch_decompressor" args="$(find libav_compressor)/images" output="screen"/>
+e>
+</launch>
