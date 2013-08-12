@@ -4,10 +4,11 @@ project(openni_saver)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp)
+find_package(catkin REQUIRED COMPONENTS roscpp cv_bridge)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
+find_package(OpenCV REQUIRED)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -48,7 +49,7 @@ find_package(catkin REQUIRED COMPONENTS roscpp)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-   INCLUDE_DIRS include
+#  INCLUDE_DIRS include
 #  LIBRARIES xtion_saver
 #  CATKIN_DEPENDS roscpp
 #  DEPENDS system_lib
@@ -64,15 +65,15 @@ include_directories(include
   ${catkin_INCLUDE_DIRS}
 )
 
-include_directories(/opt/ros/groovy/include/opencv2)
-include_directories(/opt/ros/groovy/include/cv_bridge)
-link_directories(/opt/ros/groovy/lib)
+# FOR BUILDING WITH ORDINARY CMAKE
+#include_directories(/opt/ros/groovy/include/opencv2)
+#include_directories(/opt/ros/groovy/include/cv_bridge)
+#link_directories(/opt/ros/groovy/lib)
 
 ## Declare a cpp library
 add_library(cv_saver src/cv_saver.cpp)
 
 ## Declare a cpp executable
-# add_executable(xtion_saver src/xtion_saver.cpp)
 add_executable(depth_saver_node src/depth_saver_node.cpp)
 add_executable(rgb_saver_node src/rgb_saver_node.cpp)
 add_executable(synch_saver_node src/synch_saver_node.cpp)
@@ -86,6 +87,11 @@ add_executable(synch_saver_node src/synch_saver_node.cpp)
  #  ${catkin_LIBRARIES}
 #)
 
+# Just for opencv bridge
+target_link_libraries(cv_saver
+   ${catkin_LIBRARIES}
+)
+
 target_link_libraries(depth_saver_node
    ${catkin_LIBRARIES}
 )
@@ -98,7 +104,10 @@ target_link_libraries(synch_saver_node
    ${catkin_LIBRARIES}
 )
 
-target_link_libraries(cv_saver opencv_calib3d opencv_core opencv_flann opencv_highgui opencv_legacy opencv_nonfree opencv_photo opencv_ts opencv_videostab opencv_contrib opencv_features2d opencv_gpu  opencv_imgproc opencv_ml opencv_objdetect opencv_stitching opencv_video cv_bridge)
+# FOR BUILDING WITH ORDINARY CMAKE
+#target_link_libraries(cv_saver opencv_calib3d opencv_core opencv_flann opencv_highgui opencv_legacy opencv_nonfree opencv_photo opencv_ts opencv_videostab opencv_contrib opencv_features2d opencv_gpu  opencv_imgproc opencv_ml opencv_objdetect opencv_stitching opencv_video cv_bridge)
+
+target_link_libraries(cv_saver ${OpenCV_LIBS})
 
 target_link_libraries(depth_saver_node cv_saver)
 target_link_libraries(rgb_saver_node cv_saver)
