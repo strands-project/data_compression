@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import sched, time, os, sys
-#import shutil # for debugging, saving the original images
+import shutil # for debugging, saving the original images
 
 def callback(sc, impath, nbr):
     sc.enter(20, 1, callback, (sc, impath, nbr+1))
@@ -17,18 +17,17 @@ def callback(sc, impath, nbr):
         #if f[:5] != "depth":
             #continue
         if counter == 0:
-            first = f[12:21]
+            first = f[12:22]
             timepath = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "videos", "time%s.txt" % first))
             timef = open(timepath, 'w')
-        timef.write(f[5:31] + '\n')
+        timef.write(f[5:33] + '\n')
         depthtemp = os.path.join(impath, "tempdepth%06d.png" % counter)
         rgbtemp = os.path.join(impath, "temprgb%06d.png" % counter)
         rgbf = "rgb" + f[5:11] + "-*.png"
         os.rename(os.path.join(impath, f), depthtemp) # check if there really are depths coming in
         os.system("mv %s %s" % (os.path.join(impath, rgbf), rgbtemp))
         #os.rename(os.path.join(impath, rgbf), rgbtemp) # check if there really are rgbs coming in
-        #shutil.copy(depthtemp, os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "debug", f))) # for debugging, saving the original images
-        #shutil.copy(rgbtemp, os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "debug", rgbf))) # for debugging, saving the original images
+        shutil.copy(depthtemp, os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "debug", f))) # for debugging, saving the original images
         temps.append(depthtemp)
         temps.append(rgbtemp)
         counter += 1
