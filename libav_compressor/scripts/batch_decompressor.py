@@ -7,12 +7,12 @@ def batch_decompressor(impath):
     counter = 0
     flist = os.listdir(vidpath)
     flist = filter(lambda s: s[:5] == "depth", flist)
-    flist.sort(key = lambda s: (s[:-10], int(s[-10:-4])))
+    flist.sort(key = lambda s: int(s[5:14]))
     for f in flist:
         depthvid = os.path.join(vidpath, f)
         if not os.path.isfile(depthvid):
             continue
-        rgbvid = os.path.join(vidpath, "rgb" + f[-10:-4] + ".mov") # should this be mkv?
+        rgbvid = os.path.join(vidpath, "rgb" + f[5:14] + ".mov") # should this be mkv?
         depthimages = os.path.join(impath, "tempdepth%06d.tiff")
         rgbimages = os.path.join(impath, "temprgb%06d.png")
         avconv = os.path.abspath(os.path.join(os.path.expanduser('~'), "libav", "bin", "avconv"))

@@ -51,6 +51,7 @@ namespace cv_saver {
 	    int sec = msg->header.stamp.sec;
 	    int nsec = msg->header.stamp.nsec;
 	    std::cout << "Time lag = " << sec << "." << nsec << std::endl;
+	    std::cout << "Depths: " << depths.size() << " , RGBs: " << rgbs.size() << std::endl;
 	    boost::shared_ptr<sensor_msgs::Image> tracked_object;
 		cv_bridge::CvImageConstPtr cv_img_boost_ptr;
 		try {
@@ -68,14 +69,16 @@ namespace cv_saver {
             if (!rgbs.empty()) {
                 std::cout << "Received a depth image!" << std::endl;
                 delta = duration.total_milliseconds() - start;
-			    sprintf(buffer, "%s/depth%06d.png", impath.c_str(), delta);
+			    sprintf(buffer, "%s/depth%06d-%09d-%09d.png", impath.c_str(), delta, sec, nsec);
 			    std::vector<int> compression;
                 compression.push_back(CV_IMWRITE_PNG_COMPRESSION);
                 compression.push_back(0);
 		        cv::imwrite(buffer, cv_img_boost_ptr->image, compression);
-		        sprintf(buffer, "%s/rgb%06d.png", impath.c_str(), delta);
+		        sprintf(buffer, "%s/rgb%06d-%09d-%09d.png", impath.c_str(), delta, rgb_secs.front(), rgb_nsecs.front());
 		        cv::imwrite(buffer, rgbs.front(), compression);
 		        rgbs.pop_front();
+		        rgb_secs.pop_front();
+		        rgb_nsecs.pop_front();
             }
             else {
                 std::cout << "Now i set depth!" << std::endl;
@@ -88,14 +91,16 @@ namespace cv_saver {
 		    if (!depths.empty()) {
 			    std::cout << "Received an RGB image!" << std::endl;
 			    delta = duration.total_milliseconds() - start;
-			    sprintf(buffer, "%s/rgb%06d.png", impath.c_str(), delta);
+			    sprintf(buffer, "%s/rgb%06d-%09d-%09d.png", impath.c_str(), delta, sec, nsec);
 			    std::vector<int> compression;
                 compression.push_back(CV_IMWRITE_PNG_COMPRESSION);
                 compression.push_back(0);
 		        cv::imwrite(buffer, cv_img_boost_ptr->image, compression);
-		        sprintf(buffer, "%s/depth%06d.png", impath.c_str(), delta);
+		        sprintf(buffer, "%s/depth%06d-%09d-%09d.png", impath.c_str(), delta, depth_secs.front(), depth_nsecs.front());
 		        cv::imwrite(buffer, depths.front(), compression);
 		        depths.pop_front();
+		        depth_secs.pop_front();
+		        depth_nsecs.pop_front();
             }
             else {
                 std::cout << "Now i set rgb!" << std::endl;
