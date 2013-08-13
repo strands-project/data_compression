@@ -22,8 +22,6 @@ def batch_decompressor(impath):
         templist = filter(lambda s: s[:9] == "tempdepth", templist)
         templist.sort(key = lambda s: int(s[-11:-5]))
         for t in templist:
-            print "Depth file name"
-            print t[-11:5]
             rgbt = os.path.join(impath, "temprgb" + t[-11:-5] + ".png")
             os.rename(os.path.join(impath, t), os.path.join(impath, "depth%06d.tiff" % counter))
             os.rename(rgbt, os.path.join(impath, "rgb%06d.png" % counter))
