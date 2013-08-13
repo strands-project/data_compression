@@ -4,10 +4,6 @@
 
 int main(int argc, char** argv)
 {
-
-	//cv_saver saver;
-	std::cout << "WHAT!" << std::endl;
-	std::cout << "WHAT!" << std::endl;
 	ros::init(argc, argv, "synch_saver_node");
 	ros::NodeHandle n;
     if (!n.hasParam("/synch_saver_node/image_folder")) {
@@ -15,13 +11,10 @@ int main(int argc, char** argv)
         return -1;
     }
     std::string image_folder;
-    std::cout << "1" << std::endl;
     n.getParam("/synch_saver_node/image_folder", image_folder);
     cv_saver::init_saver(image_folder);
-    std::cout << "2" << std::endl;
     //ros::Duration(0.5).sleep();
 	ros::Subscriber depthSub = n.subscribe("camera/depth/image_raw", 10, &cv_saver::synch_callback);
-	std::cout << "3" << std::endl;
     ros::Subscriber rgbSub = n.subscribe("camera/rgb/image_color", 10, &cv_saver::synch_callback);
 	ros::spin();
 
