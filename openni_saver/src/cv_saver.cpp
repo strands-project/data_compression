@@ -10,8 +10,8 @@ namespace cv_saver {
 	void init_saver(const std::string& path)
 	{
         impath = path;
-        gotDepth = false;
-        gotRGB = false;
+        depths.clear();
+        rgbs.clear();
 		boost::posix_time::ptime time = boost::posix_time::microsec_clock::local_time();
 		boost::posix_time::time_duration duration(time.time_of_day());
 		start = duration.total_milliseconds();
@@ -48,7 +48,9 @@ namespace cv_saver {
 
 	void synch_callback(const sensor_msgs::Image::ConstPtr& msg)
 	{
-	    std::cout << "Time lag = " << msg->header.stamp.sec << "." << msg->header.stamp.nsec << std::endl;
+	    int sec = msg->header.stamp.sec;
+	    int nsec = msg->header.stamp.nsec;
+	    std::cout << "Time lag = " << sec << "." << nsec << std::endl;
 	    boost::shared_ptr<sensor_msgs::Image> tracked_object;
 		cv_bridge::CvImageConstPtr cv_img_boost_ptr;
 		try {
@@ -63,7 +65,7 @@ namespace cv_saver {
 	    int delta;
 	    char buffer[250];
 	    if (cv_img_boost_ptr->image.type() == CV_16UC1) {
-            if (gotRGB) {
+            if (!rgbs.empty()) {
                 std::cout << "Received a depth image!" << std::endl;
                 delta = duration.total_milliseconds() - start;
 			    sprintf(buffer, "%s/depth%06d.png", impath.c_str(), delta);
@@ -72,18 +74,18 @@ namespace cv_saver {
                 compression.push_back(0);
 		        cv::imwrite(buffer, cv_img_boost_ptr->image, compression);
 		        sprintf(buffer, "%s/rgb%06d.png", impath.c_str(), delta);
-		        cv::imwrite(buffer, lastRGB, compression);
-		        gotRGB = false;
-		        gotDepth = false;
+		        cv::imwrite(buffer, rgbs.front(), compression);
+		        rgbs.pop_front();
             }
             else {
                 std::cout << "Now i set depth!" << std::endl;
-                lastDepth = cv_img_boost_ptr->image.clone();
-                gotDepth = true;
+                depths.push_back(cv_img_boost_ptr->image.clone());
+                depth_secs.push_back(sec);
+                depth_nsecs.push_back(nsec);
             }
 		}
 		else if (cv_img_boost_ptr->image.type() == CV_8UC3) {
-		    if (gotRGB) {
+		    if (!depths.empty()) {
 			    std::cout << "Received an RGB image!" << std::endl;
 			    delta = duration.total_milliseconds() - start;
 			    sprintf(buffer, "%s/rgb%06d.png", impath.c_str(), delta);
@@ -92,14 +94,14 @@ namespace cv_saver {
                 compression.push_back(0);
 		        cv::imwrite(buffer, cv_img_boost_ptr->image, compression);
 		        sprintf(buffer, "%s/depth%06d.png", impath.c_str(), delta);
-		        cv::imwrite(buffer, lastDepth, compression);
-		        gotRGB = false;
-		        gotDepth = false;
+		        cv::imwrite(buffer, depths.front(), compression);
+		        depths.pop_front();
             }
             else {
                 std::cout << "Now i set rgb!" << std::endl;
-                lastRGB = cv_img_boost_ptr->image.clone();
-                gotRGB = true;
+                rgbs.push_back(cv_img_boost_ptr->image.clone());
+                rgb_secs.push_back(sec);
+                rgb_nsecs.push_back(nsec);
             }
 
 		}
