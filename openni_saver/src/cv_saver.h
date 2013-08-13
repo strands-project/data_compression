@@ -4,13 +4,16 @@
 #include <sensor_msgs/Image.h>
 #include <string>
 #include <opencv2/opencv.hpp>
+#include <list>
 
 namespace cv_saver {
 
-    cv::Mat lastDepth;
-    cv::Mat lastRGB;
-    bool gotDepth;
-    bool gotRGB;
+    std::list<cv::Mat> depths;
+    std::list<cv::Mat> rgbs;
+    std::list<int> depth_secs;
+    std::list<int> rgb_secs;
+    std::list<int> depth_nsecs;
+    std::list<int> rgb_nsecs;
     std::string impath;
 	long int start;
 	void init_saver(const std::string&);
