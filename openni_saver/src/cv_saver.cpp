@@ -19,6 +19,7 @@ namespace cv_saver {
 
 	void image_callback(const sensor_msgs::Image::ConstPtr& msg)
 	{
+	    std::cout << "Time lag = " << msg->header.stamp.sec << "." << msg->header.stamp.nsec << std::endl;
 		boost::shared_ptr<sensor_msgs::Image> tracked_object;
 		cv_bridge::CvImageConstPtr cv_img_boost_ptr;
 		try {
@@ -47,6 +48,7 @@ namespace cv_saver {
 
 	void synch_callback(const sensor_msgs::Image::ConstPtr& msg)
 	{
+	    std::cout << "Time lag = " << msg->header.stamp.sec << "." << msg->header.stamp.nsec << std::endl;
 	    boost::shared_ptr<sensor_msgs::Image> tracked_object;
 		cv_bridge::CvImageConstPtr cv_img_boost_ptr;
 		try {
