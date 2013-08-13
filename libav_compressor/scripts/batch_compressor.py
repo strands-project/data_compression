@@ -18,6 +18,9 @@ def callback(sc, impath, nbr):
             #continue
         if counter == 0:
             first = f[12:21]
+            timepath = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "videos", "time%s.txt" % first))
+            timef = open(timepath, 'w')
+        timef.write(f[5:31] + '\n')
         depthtemp = os.path.join(impath, "tempdepth%06d.png" % counter)
         rgbtemp = os.path.join(impath, "temprgb%06d.png" % counter)
         rgbf = "rgb" + f[5:11] + "-*.png"
@@ -29,6 +32,7 @@ def callback(sc, impath, nbr):
         temps.append(depthtemp)
         temps.append(rgbtemp)
         counter += 1
+    timef.close()
     depthimages = os.path.join(impath, "tempdepth%06d.png")
     rgbimages = os.path.join(impath, "temprgb%06d.png")
     avconv = os.path.abspath(os.path.join(os.path.expanduser('~'), "libav", "bin", "avconv"))
