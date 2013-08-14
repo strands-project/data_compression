@@ -54,8 +54,8 @@ void read_images(cv_bridge::CvImage& image_depth, cv_bridge::CvImage& image_rgb,
     header_depth.frame_id = "/camera_depth_frame";
     header_rgb.frame_id = "/camera_rgb_frame";
     
-    image_depth = cv_bridge::CvImage(header_depth, "CV16UC1", temp_depth);
-    image_rgb = cv_bridge::CvImage(header_rgb, "CV8UC1", temp_rgb);
+    image_depth = cv_bridge::CvImage(header_depth, "16UC1", temp_depth);
+    image_rgb = cv_bridge::CvImage(header_rgb, "8UC3", temp_rgb);
     
     if (remove(depth_path.c_str()) != 0) {
         ROS_ERROR("Error deleting depth file.");
@@ -69,14 +69,14 @@ int main(int argc, char** argv)
 {
     ros::init(argc, argv, "play_images");
 	ros::NodeHandle n;
-    if (!n.hasParam("/depth_saver_node/video_folder")) {
-        ROS_ERROR("Could not find parameter video_folder.");
+    if (!n.hasParam("/play_images/image_folder")) {
+        ROS_ERROR("Could not find parameter image_folder.");
         return -1;
     }
-    std::string video_folder;
-    n.getParam("/depth_saver_node/video_folder", video_folder);
-	ros::Publisher depth_pub = n.advertise<sensor_msgs::Image>("/camera/depth", 1000);
-	ros::Publisher rgb_pub = n.advertise<sensor_msgs::Image>("/camera/rgb", 1000);
+    std::string image_folder;
+    n.getParam("/play_images/image_folder", image_folder);
+	ros::Publisher depth_pub = n.advertise<sensor_msgs::Image>("/player/depth", 1000);
+	ros::Publisher rgb_pub = n.advertise<sensor_msgs::Image>("/player/rgb", 1000);
 	
 	ros::Rate loop_rate(30);
 
@@ -87,12 +87,12 @@ int main(int argc, char** argv)
     int count = 0;
     std::vector<std::string> depth_files;
     std::vector<std::string> rgb_files;
-    update_files(video_folder, depth_files, rgb_files);
+    update_files(image_folder, depth_files, rgb_files);
     cv::Mat temp_depth(480, 640, CV_16UC1);
     cv::Mat temp_rgb(480, 640, CV_8UC3);
     cv_bridge::CvImage image_depth;
     cv_bridge::CvImage image_rgb;
-    read_images(image_depth, image_rgb, temp_depth, temp_rgb, video_folder, depth_files.back(), rgb_files.back());
+    read_images(image_depth, image_rgb, temp_depth, temp_rgb, image_folder, depth_files.back(), rgb_files.back());
     depth_files.pop_back();
     rgb_files.pop_back();
     
@@ -111,14 +111,16 @@ int main(int argc, char** argv)
         ros::spinOnce();
         
         if (depth_files.size() < 60 || rgb_files.size() < 60) {
-            update_files(video_folder, depth_files, rgb_files);
+            update_files(image_folder, depth_files, rgb_files);
             if (depth_files.empty() || rgb_files.empty()) {
                 ROS_INFO("There are no more images to show, stopping.");
                 break;
             }
         }
         
-        read_images(image_depth, image_rgb, temp_depth, temp_rgb, video_folder, depth_files.front(), rgb_files.front());
+        read_images(image_depth, image_rgb, temp_depth, temp_rgb, image_folder, depth_files.back(), rgb_files.back());
+        depth_files.pop_back();
+        rgb_files.pop_back();
 
         loop_rate.sleep();
         ++count;
