@@ -54,6 +54,7 @@ namespace cv_saver {
 	    boost::shared_ptr<sensor_msgs::Image> tracked_object;
 		cv_bridge::CvImageConstPtr cv_img_boost_ptr;
 		try {
+		    // here we can use toCvCopy instead, and don't have to do that later
 			cv_img_boost_ptr = cv_bridge::toCvShare(*msg, tracked_object);
 		}
 		catch (cv_bridge::Exception& e) {
