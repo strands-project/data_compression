@@ -50,8 +50,7 @@ namespace cv_saver {
 	{
 	    int sec = msg->header.stamp.sec;
 	    int nsec = msg->header.stamp.nsec;
-	    std::cout << "Time lag = " << sec << "." << nsec << std::endl;
-	    std::cout << "Depths: " << depths.size() << " , RGBs: " << rgbs.size() << std::endl;
+	    ROS_INFO("Image timestamp: %d.%d, Stack: %ld:%ld", sec, nsec, depths.size(), rgbs.size());
 	    boost::shared_ptr<sensor_msgs::Image> tracked_object;
 		cv_bridge::CvImageConstPtr cv_img_boost_ptr;
 		try {
@@ -67,7 +66,6 @@ namespace cv_saver {
 	    char buffer[250];
 	    if (cv_img_boost_ptr->image.type() == CV_16UC1) {
             if (!rgbs.empty()) {
-                std::cout << "Received a depth image!" << std::endl;
                 delta = duration.total_milliseconds() - start;
 			    sprintf(buffer, "%s/depth%06d-%010d-%010d.png", impath.c_str(), delta, sec, nsec);
 			    std::vector<int> compression;
@@ -81,7 +79,6 @@ namespace cv_saver {
 		        rgb_nsecs.pop_front();
             }
             else {
-                std::cout << "Now i set depth!" << std::endl;
                 depths.push_back(cv_img_boost_ptr->image.clone());
                 depth_secs.push_back(sec);
                 depth_nsecs.push_back(nsec);
@@ -89,7 +86,6 @@ namespace cv_saver {
 		}
 		else if (cv_img_boost_ptr->image.type() == CV_8UC3) {
 		    if (!depths.empty()) {
-			    std::cout << "Received an RGB image!" << std::endl;
 			    delta = duration.total_milliseconds() - start;
 			    sprintf(buffer, "%s/rgb%06d-%010d-%010d.png", impath.c_str(), delta, sec, nsec);
 			    std::vector<int> compression;
@@ -103,7 +99,6 @@ namespace cv_saver {
 		        depth_nsecs.pop_front();
             }
             else {
-                std::cout << "Now i set rgb!" << std::endl;
                 rgbs.push_back(cv_img_boost_ptr->image.clone());
                 rgb_secs.push_back(sec);
                 rgb_nsecs.push_back(nsec);
