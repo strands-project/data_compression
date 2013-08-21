@@ -9,6 +9,8 @@ def callback(sc, impath, nbr):
     first = ""
     counter = 0
     flist = os.listdir(impath)
+    rgblist = filter(lambda s: s[:3] == "rgb", flist) # maybe do the filtering at the same time
+    rgblist.sort(key = lambda s: int(s[3:9]))
     flist = filter(lambda s: s[:5] == "depth", flist)
     flist.sort(key = lambda s: int(s[5:11]))
     for f in flist:
@@ -20,14 +22,25 @@ def callback(sc, impath, nbr):
             first = f[12:22]
             timepath = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "videos", "time%s.txt" % first))
             timef = open(timepath, 'w')
-        timef.write(f[5:33] + '\n')
+        timef.write(f[:33] + '\n')
         depthtemp = os.path.join(impath, "tempdepth%06d.png" % counter)
         rgbtemp = os.path.join(impath, "temprgb%06d.png" % counter)
-        rgbf = "rgb" + f[5:11] + "-*.png"
+        ind = -1
+        for i, r in enumerate(rgblist):
+            if r[3:9] == f[5:11]:
+                ind = i
+                rgbf = r
+                break
+        if ind == -1: # should not happen since rgb is always written before depth
+            print "Couldn't find a matching rgb file!"
+        rgblist.pop(ind)
+        timef.write(rgbf[:31] + '\n')
+        #rgbf = "rgb" + f[5:11] + "-*.png"
         os.rename(os.path.join(impath, f), depthtemp) # check if there really are depths coming in
-        os.system("mv %s %s" % (os.path.join(impath, rgbf), rgbtemp))
+        os.rename(os.path.join(impath, rgbf), rgbtemp)
         #os.rename(os.path.join(impath, rgbf), rgbtemp) # check if there really are rgbs coming in
         shutil.copy(depthtemp, os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "debug", f))) # for debugging, saving the original images
+        shutil.copy(rgbtemp, os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "debug", rgbf))) # for debugging, saving the original images
         temps.append(depthtemp)
         temps.append(rgbtemp)
         counter += 1

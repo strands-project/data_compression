@@ -68,13 +68,13 @@ namespace cv_saver {
 	    if (cv_img_boost_ptr->image.type() == CV_16UC1) {
             if (!rgbs.empty()) {
                 delta = duration.total_milliseconds() - start;
-			    sprintf(buffer, "%s/depth%06d-%010d-%010d.png", impath.c_str(), delta, sec, nsec);
-			    std::vector<int> compression;
+                std::vector<int> compression;
                 compression.push_back(CV_IMWRITE_PNG_COMPRESSION);
                 compression.push_back(0);
-		        cv::imwrite(buffer, cv_img_boost_ptr->image, compression);
-		        sprintf(buffer, "%s/rgb%06d-%010d-%010d.png", impath.c_str(), delta, rgb_secs.front(), rgb_nsecs.front());
+                sprintf(buffer, "%s/rgb%06d-%010d-%010d.png", impath.c_str(), delta, rgb_secs.front(), rgb_nsecs.front());
 		        cv::imwrite(buffer, rgbs.front(), compression);
+			    sprintf(buffer, "%s/depth%06d-%010d-%010d.png", impath.c_str(), delta, sec, nsec);
+		        cv::imwrite(buffer, cv_img_boost_ptr->image, compression);
 		        rgbs.pop_front();
 		        rgb_secs.pop_front();
 		        rgb_nsecs.pop_front();
@@ -88,10 +88,10 @@ namespace cv_saver {
 		else if (cv_img_boost_ptr->image.type() == CV_8UC3) {
 		    if (!depths.empty()) {
 			    delta = duration.total_milliseconds() - start;
-			    sprintf(buffer, "%s/rgb%06d-%010d-%010d.png", impath.c_str(), delta, sec, nsec);
 			    std::vector<int> compression;
                 compression.push_back(CV_IMWRITE_PNG_COMPRESSION);
                 compression.push_back(0);
+			    sprintf(buffer, "%s/rgb%06d-%010d-%010d.png", impath.c_str(), delta, sec, nsec);
 		        cv::imwrite(buffer, cv_img_boost_ptr->image, compression);
 		        sprintf(buffer, "%s/depth%06d-%010d-%010d.png", impath.c_str(), delta, depth_secs.front(), depth_nsecs.front());
 		        cv::imwrite(buffer, depths.front(), compression);
