@@ -48,10 +48,21 @@ void read_images(cv_bridge::CvImage& image_depth, cv_bridge::CvImage& image_rgb,
     temp_depth = cv::imread(depth_path, -1);
     temp_rgb = cv::imread(rgb_path, -1);
     
+    //depth003896-1376404206-0409239781
+    std::string depth_sec = depth_file.substr(12, 10);
+    std::string depth_nsec = depth_file.substr(23, 10);
+    
+    std::string rgb_sec = rgb_file.substr(10, 10);
+    std::string rgb_nsec = rgb_file.substr(21, 10);
+    
     std_msgs::Header header_depth;
     std_msgs::Header header_rgb;
-    header_depth.stamp = ros::Time().now();
-    header_rgb.stamp = header_depth.stamp;
+    header_depth.stamp = ros::Time(atoi(depth_sec.c_str()), atoi(depth_nsec.c_str())); //ros::Time().now();
+    header_rgb.stamp = ros::Time(atoi(rgb_sec.c_str()), atoi(rgb_nsec.c_str())); //header_depth.stamp;
+    
+    std::cout << "Depth time: " << header_depth.stamp << std::endl;
+    std::cout << "RGB time: " << header_rgb.stamp << std::endl;
+    
     header_depth.frame_id = "/camera_depth_frame"; // should probably be a parameter
     header_rgb.frame_id = "/camera_rgb_frame"; // should probably be a parameter
     
@@ -91,7 +102,7 @@ int main(int argc, char** argv)
     n.getParam("/play_images/image_folder", image_folder);
 	ros::Publisher depth_pub = n.advertise<sensor_msgs::Image>("/player/depth", 10);
 	ros::Publisher rgb_pub = n.advertise<sensor_msgs::Image>("/player/rgb", 10);
-	ros::Subscriber time_sub = n.subscribe("/clock", 1, &time_callback);
+	//ros::Subscriber time_sub = n.subscribe("/clock", 1, &time_callback);
 	//n.subscribe("camera/depth/image_raw", 2, &cv_saver::image_callback);
 	
 	ros::Rate loop_rate(30);

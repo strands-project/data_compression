@@ -25,8 +25,9 @@ def batch_decompressor(impath):
         for t in templist:
             time = timef.readline()
             rgbt = os.path.join(impath, "temprgb" + t[-11:-5] + ".png")
-            os.rename(os.path.join(impath, t), os.path.join(impath, "depth%s.tiff" % time[:-1]))
-            os.rename(rgbt, os.path.join(impath, "rgb%s.png" % time[:-1]))
+            os.rename(os.path.join(impath, t), os.path.join(impath, "%s.tiff" % time[:-1]))
+            time = timef.readline()
+            os.rename(rgbt, os.path.join(impath, "%s.png" % time[:-1]))
             counter += 1
         timef.close()
 
