@@ -15,7 +15,7 @@ int main(int argc, char** argv)
     n.getParam("/image_player/image_folder", image_folder);
 	ros::Publisher depth_pub = n.advertise<sensor_msgs::Image>("/bag_player/depth", 10);
 	ros::Publisher rgb_pub = n.advertise<sensor_msgs::Image>("/bag_player/rgb", 10);
-    
+    ros::Duration(0.18f).sleep();
     bag_player player(n, depth_pub, rgb_pub, image_folder);
     ros::spin();
 	

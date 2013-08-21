@@ -57,6 +57,7 @@ ros::Time bag_player::read_depth()
     std_msgs::Header header_depth;
     header_depth.stamp = ros::Time(atoi(depth_sec.c_str()), atoi(depth_nsec.c_str()));
     
+    std::cout << "ROS time: " << ros::Time::now() << std::endl;
     std::cout << "Depth time: " << header_depth.stamp << std::endl;
     
     header_depth.frame_id = "/camera_depth_frame"; // should probably be a parameter

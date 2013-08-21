@@ -2,7 +2,8 @@
 #define BAG_PLAYER_H
 
 #include <ros/ros.h>
-#include <ros/time.h>
+//#include <ros/time.h>
+#include <rosgraph_msgs/Clock.h>
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/opencv.hpp>
 #include <vector>
