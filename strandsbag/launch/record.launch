@@ -1,0 +1,6 @@
+<launch>
+    <arg name="f" default=""/>
+    <node pkg="rosbag" type="record" name="recorder" output="screen" args="/rosout /rosout_agg -o $(arg f)"/>
+	<include file="$(find libav_compressor)/launch/video_saver.launch"/>
+e>
+</launch>

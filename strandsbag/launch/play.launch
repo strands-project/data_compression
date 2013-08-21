@@ -1,5 +1,6 @@
 <launch>
-    <node pkg="rosbag" type="play" name="player" output="screen" args="--clock $(find strandsbag)/bags/bagfile.bag"/>
+    <arg name="f"/>
+    <node pkg="rosbag" type="play" name="player" output="screen" args="--clock $(arg f)"/>
 	<node pkg="strandsbag" type="image_player" name="image_player" args="$(find libav_compressor)/images" output="screen">
 	    <param name="image_folder" value="$(find libav_compressor)/images"/>
     </node>
