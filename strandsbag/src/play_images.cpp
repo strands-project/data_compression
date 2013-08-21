@@ -5,6 +5,7 @@
 #include <opencv2/opencv.hpp>
 #include <sensor_msgs/Image.h>
 //#include <std_msgs/Header.h>
+#include <rosgraph_msgs/Clock.h>
 #include <vector>
 #include <string>
 #include <dirent.h>
@@ -51,18 +52,31 @@ void read_images(cv_bridge::CvImage& image_depth, cv_bridge::CvImage& image_rgb,
     std_msgs::Header header_rgb;
     header_depth.stamp = ros::Time().now();
     header_rgb.stamp = header_depth.stamp;
-    header_depth.frame_id = "/camera_depth_frame";
-    header_rgb.frame_id = "/camera_rgb_frame";
+    header_depth.frame_id = "/camera_depth_frame"; // should probably be a parameter
+    header_rgb.frame_id = "/camera_rgb_frame"; // should probably be a parameter
     
     image_depth = cv_bridge::CvImage(header_depth, "16UC1", temp_depth);
     image_rgb = cv_bridge::CvImage(header_rgb, "8UC3", temp_rgb);
+    /*image_depth.header = header_depth;
+    image_depth.encoding = "16UC1";
+    image_depth.image = temp_depth.clone();
     
-    if (remove(depth_path.c_str()) != 0) {
+    image_rgb.header = header_rgb;
+    image_rgb.encoding = "8UC3";
+    image_rgb.image = temp_rgb.clone();*/
+    
+    /*if (remove(depth_path.c_str()) != 0) {
         ROS_ERROR("Error deleting depth file.");
     }
     if (remove(rgb_path.c_str()) != 0) {
         ROS_ERROR("Error deleting rgb file.");
-    }
+    }*/
+}
+
+void time_callback(const rosgraph_msgs::ClockPtr& msg)
+{
+    ros::Time clock = msg->clock;
+    std::cout << "now i received a clock: " << clock << std::endl;
 }
 
 int main(int argc, char** argv)
@@ -75,8 +89,10 @@ int main(int argc, char** argv)
     }
     std::string image_folder;
     n.getParam("/play_images/image_folder", image_folder);
-	ros::Publisher depth_pub = n.advertise<sensor_msgs::Image>("/player/depth", 1000);
-	ros::Publisher rgb_pub = n.advertise<sensor_msgs::Image>("/player/rgb", 1000);
+	ros::Publisher depth_pub = n.advertise<sensor_msgs::Image>("/player/depth", 10);
+	ros::Publisher rgb_pub = n.advertise<sensor_msgs::Image>("/player/rgb", 10);
+	ros::Subscriber time_sub = n.subscribe("/clock", 1, &time_callback);
+	//n.subscribe("camera/depth/image_raw", 2, &cv_saver::image_callback);
 	
 	ros::Rate loop_rate(30);
 
@@ -110,8 +126,9 @@ int main(int argc, char** argv)
 
         ros::spinOnce();
         
+        // if we have too few images we should send a message to decompress more
         if (depth_files.size() < 60 || rgb_files.size() < 60) {
-            update_files(image_folder, depth_files, rgb_files);
+            //update_files(image_folder, depth_files, rgb_files);
             if (depth_files.empty() || rgb_files.empty()) {
                 ROS_INFO("There are no more images to show, stopping.");
                 break;
