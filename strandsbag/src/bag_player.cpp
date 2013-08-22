@@ -8,6 +8,7 @@
 bag_player::bag_player(ros::NodeHandle& n, ros::Publisher& depth_pub, ros::Publisher& rgb_pub, const std::string& dirname) : n(n), depth_pub(depth_pub), rgb_pub(rgb_pub), dirname(dirname), temp_depth(480, 640, CV_16UC1), temp_rgb(480, 640, CV_8UC3)
 {
     update_files();
+    // read first files and set timers for publishing
     ros::Time t = read_depth();
     depth_timer = n.createTimer(t - ros::Time::now(), &bag_player::publish_depth, this, true);
     t = read_rgb();
@@ -38,7 +39,7 @@ void bag_player::update_files()
 	    }
     }
     closedir(dir);
-    std::sort(depth_files.begin(), depth_files.end());
+    std::sort(depth_files.begin(), depth_files.end()); // sort times
     std::reverse(depth_files.begin(), depth_files.end());
     std::sort(rgb_files.begin(), rgb_files.end());
     std::reverse(rgb_files.begin(), rgb_files.end());
@@ -51,8 +52,8 @@ ros::Time bag_player::read_depth()
     std::string depth_path = dirname + "/" + depth_file;
     temp_depth = cv::imread(depth_path, -1);
     
-    std::string depth_sec = depth_file.substr(12, 10);
-    std::string depth_nsec = depth_file.substr(23, 10);
+    std::string depth_sec = depth_file.substr(12, 10); // seconds timestamp
+    std::string depth_nsec = depth_file.substr(23, 10); // nanosec timestamp
     
     std_msgs::Header header_depth;
     header_depth.stamp = ros::Time(atoi(depth_sec.c_str()), atoi(depth_nsec.c_str()));
@@ -64,6 +65,7 @@ ros::Time bag_player::read_depth()
     
     image_depth = cv_bridge::CvImage(header_depth, "16UC1", temp_depth);
     
+    // This can be removed if we want to do decompression online
     /*if (remove(depth_path.c_str()) != 0) {
         ROS_ERROR("Error deleting depth file.");
     }*/
@@ -77,8 +79,8 @@ ros::Time bag_player::read_rgb()
     std::string rgb_path = dirname + "/" + rgb_file;
     temp_rgb = cv::imread(rgb_path, -1);
     
-    std::string rgb_sec = rgb_file.substr(10, 10);
-    std::string rgb_nsec = rgb_file.substr(21, 10);
+    std::string rgb_sec = rgb_file.substr(10, 10); // seconds timestamp
+    std::string rgb_nsec = rgb_file.substr(21, 10); // nanosec timestamp
     
     std_msgs::Header header_rgb;
     header_rgb.stamp = ros::Time(atoi(rgb_sec.c_str()), atoi(rgb_nsec.c_str()));
@@ -89,6 +91,7 @@ ros::Time bag_player::read_rgb()
     
     image_rgb = cv_bridge::CvImage(header_rgb, "8UC3", temp_rgb);
     
+    // This can be removed if we want to do decompression online
     /*if (remove(rgb_path.c_str()) != 0) {
         ROS_ERROR("Error deleting rgb file.");
     }*/
@@ -97,20 +100,22 @@ ros::Time bag_player::read_rgb()
 
 void bag_player::publish_depth(const ros::TimerEvent& e)
 {
-    depth_pub.publish(image_depth.toImageMsg());
+    depth_pub.publish(image_depth.toImageMsg()); // publish
     if (depth_files.size() == 0) {
         return;
     }
     ros::Time t = read_depth();
+    // set a new timer for the next image timestamp
     depth_timer = n.createTimer(t - ros::Time::now(), &bag_player::publish_depth, this, true);
 }
 
 void bag_player::publish_rgb(const ros::TimerEvent& e)
 {
-    rgb_pub.publish(image_rgb.toImageMsg());
+    rgb_pub.publish(image_rgb.toImageMsg()); // publish
     if (rgb_files.size() == 0) {
         return;
     }
     ros::Time t = read_rgb();
+    // set a new timer for the next image timestamp
     rgb_timer = n.createTimer(t - ros::Time::now(), &bag_player::publish_rgb, this, true);
 }

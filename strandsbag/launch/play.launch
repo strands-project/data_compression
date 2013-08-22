@@ -1,9 +1,13 @@
 <launch>
+    <!-- We need to set use_sim_time because the clock arg doesn't do so -->
     <rosparam>
         use_sim_time : true
     </rosparam>
+    <!-- The file name of the rosbag to play -->
     <arg name="f"/>
+    <!-- Launch the rosbag -->
     <node pkg="rosbag" type="play" name="player" output="screen" args="$(arg f) --clock"/>
+    <!-- Launch the node streaming the images from a folder -->
 	<node pkg="strandsbag" type="image_player" name="image_player" args="$(find libav_compressor)/images" output="screen">
 	    <param name="image_folder" value="$(find libav_compressor)/images"/>
     </node>

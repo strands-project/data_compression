@@ -69,7 +69,6 @@ include_directories(include
 add_library(bag_player src/bag_player.cpp)
 
 ## Declare a cpp executable
-add_executable(play_images src/play_images.cpp)
 add_executable(image_player src/image_player.cpp)
 
 ## Add cmake target dependencies of the executable/library
@@ -83,10 +82,6 @@ target_link_libraries(bag_player
 
 target_link_libraries(image_player
   bag_player ${catkin_LIBRARIES}
-)
-
-target_link_libraries(play_images
-  ${catkin_LIBRARIES}
 )
 
 #############
