@@ -1,6 +1,9 @@
 <launch>
+    <!-- The name of the rosbag to be saved -->
     <arg name="f" default=""/>
+    <!-- Record a rosbag, use regular expressions to exclude images -->
     <node pkg="rosbag" type="record" name="recorder" output="screen" args="/rosout /rosout_agg -o $(arg f)"/>
+    <!-- Save the images published by openni_launch -->
 	<include file="$(find libav_compressor)/launch/video_saver.launch"/>
 e>
 </launch>
