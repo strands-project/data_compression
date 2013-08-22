@@ -4,6 +4,16 @@
 
 using namespace cv;
 
+/*
+This is just a small program for comparing the depth
+images after decompression to the ones before
+compression. It just looks at the folders provided
+and display the respective corresponding frames
+together with the absolute distance. There is
+a flickering at the side but that doesn't effect
+the area where there is information.
+*/
+
 void displayDepth(const string& name, Mat& depthMap) {
     Mat show;
     const float scaleFactor = 0.05f;

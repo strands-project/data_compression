@@ -1,4 +1,6 @@
 <launch>
+    <!-- Save images from openni_launch topics to video, online into smaller videos -->
+    <!-- Used by strandsbag record -->
     <node pkg="openni_saver" type="synch_saver_node" name="synch_saver_node" output="screen">
         <param name="image_folder" value="$(find openni_saver)/images"/>
     </node>
