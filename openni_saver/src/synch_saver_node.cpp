@@ -12,10 +12,16 @@ int main(int argc, char** argv)
     }
     std::string image_folder;
     n.getParam("/synch_saver_node/image_folder", image_folder);
+    if (!n.hasParam("/synch_saver_node/camera_topic")) {
+        std::cout << "You have to provide the camera_topic parameter!" << std::endl;
+        return -1;
+    }
+    std::string camera_topic;
+    n.getParam("/synch_saver_node/camera_topic", camera_topic);
     cv_saver::init_saver(image_folder);
-    //ros::Duration(0.5).sleep();
-	ros::Subscriber depthSub = n.subscribe("camera/depth/image_raw", 10, &cv_saver::synch_callback);
-    ros::Subscriber rgbSub = n.subscribe("camera/rgb/image_color", 10, &cv_saver::synch_callback);
+    std::cout << camera_topic + "/depth/image_raw" << std::endl;
+	ros::Subscriber depthSub = n.subscribe(camera_topic + "/depth/image_raw", 10, &cv_saver::synch_callback);
+    ros::Subscriber rgbSub = n.subscribe(camera_topic + "/rgb/image_color", 10, &cv_saver::synch_callback);
 	ros::spin();
 
 	return 0;

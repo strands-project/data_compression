@@ -13,8 +13,14 @@ int main(int argc, char** argv)
     }
     std::string image_folder;
     n.getParam("/image_player/image_folder", image_folder);
-	ros::Publisher depth_pub = n.advertise<sensor_msgs::Image>("/bag_player/depth", 10);
-	ros::Publisher rgb_pub = n.advertise<sensor_msgs::Image>("/bag_player/rgb", 10);
+    if (!n.hasParam("/image_player/camera_topic")) {
+        ROS_ERROR("Could not find parameter camera_topic.");
+        return -1;
+    }
+    std::string camera_topic;
+    n.getParam("/image_player/camera_topic", camera_topic);
+	ros::Publisher depth_pub = n.advertise<sensor_msgs::Image>(camera_topic + "/depth/image_raw", 10);
+	ros::Publisher rgb_pub = n.advertise<sensor_msgs::Image>(camera_topic + "/rgb/image_color", 10);
     ros::Duration(0.18f).sleep();
     // the magic happens in the bag_player
     bag_player player(n, depth_pub, rgb_pub, image_folder);

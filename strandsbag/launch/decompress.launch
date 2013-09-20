@@ -1,0 +1,11 @@
+<launch>
+
+    <!-- Directory to load the videos -->
+    <arg name="video_path" default="$(find libav_compressor)/videos"/>
+    
+    <!-- This launch file already handles the decompression -->
+    <include file="$(find libav_compressor)/launch/video_loader.launch">
+        <arg name="video_path" value="$(arg video_path)"/>
+    </include>
+    
+</launch>
