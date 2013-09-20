@@ -38,6 +38,7 @@
     <!-- Launch the node streaming the images from a folder -->
 	<node pkg="strandsbag" type="image_player" name="image_player" args="$(find libav_compressor)/images" output="screen">
 	    <param name="image_folder" value="$(find libav_compressor)/images"/>
+	    <param name="camera_topic" value="head_xtion"/>
     </node>
 e>
 </launch>

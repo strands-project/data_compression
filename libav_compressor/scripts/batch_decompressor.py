@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 import sched, time, os, sys
 
-def batch_decompressor(impath):
+def batch_decompressor(impath, vidpath):
     print "Decompressing..."
-    # fixed path to the videos, should be parameter
-    vidpath = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "videos"))
     flist = os.listdir(vidpath) # find all depth videos, order them
     flist = filter(lambda s: s[:5] == "depth", flist)
     flist.sort(key = lambda s: int(s[5:15]))
@@ -37,4 +35,7 @@ def batch_decompressor(impath):
         timef.close()
 
 if __name__ == "__main__":
-    batch_decompressor(sys.argv[1])
+    if len(sys.argv) < 3:
+        print "Not enough arguments to batch_decompressor.py"
+    else:
+        batch_decompressor(sys.argv[1], sys.argv[2])
