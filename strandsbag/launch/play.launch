@@ -3,10 +3,38 @@
     <rosparam>
         use_sim_time : true
     </rosparam>
+    
     <!-- The file name of the rosbag to play -->
-    <arg name="f"/>
+    <arg name="o"/>
+    
+    <!-- Option to suppress output -->
+    <arg name="q" default="false"/>
+    <arg name="quiet" value="-q" if="$(arg q)"/>
+    <arg name="quiet" value="" unless="$(arg q)"/>
+    
+    <!-- Option to play without waiting, not sure if works with videos -->
+    <arg name="i" default="false"/>
+    <arg name="immediate" value="-i" if="$(arg i)"/>
+    <arg name="immediate" value="" unless="$(arg i)"/>
+    
+    <!-- Option to loop the play, this does not work with videos -->
+    <arg name="l" default="false"/>
+    <arg name="loop" value="-l" if="$(arg l)"/>
+    <arg name="loop" value="" unless="$(arg l)"/>
+    
+    <!-- Option to keep the bag running after it is empty -->
+    <arg name="k" default="false"/>
+    <arg name="keepalive" value="-k" if="$(arg k)"/>
+    <arg name="keepalive" value="" unless="$(arg k)"/>
+    
+    <!-- Start the bag paused, should work with videos -->
+    <arg name="pause" default="false"/>
+    <arg name="dopause" value="--pause" if="$(arg pause)"/>
+    <arg name="dopause" value="" unless="$(arg pause)"/>
+    
     <!-- Launch the rosbag -->
-    <node pkg="rosbag" type="play" name="player" output="screen" args="$(arg f) --clock"/>
+    <node pkg="rosbag" type="play" name="player" output="screen" args="$(arg o) --clock $(arg dopause) $(arg keepalive) $(arg loop) $(arg quiet) $(arg immediate)"/>
+    
     <!-- Launch the node streaming the images from a folder -->
 	<node pkg="strandsbag" type="image_player" name="image_player" args="$(find libav_compressor)/images" output="screen">
 	    <param name="image_folder" value="$(find libav_compressor)/images"/>
