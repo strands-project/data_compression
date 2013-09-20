@@ -2,9 +2,9 @@
 import sched, time, os, sys
 import shutil # for debugging, saving the original images
 
-def callback(sc, impath, nbr):
+def callback(sc, impath, vidpath, nbr):
     # schedule new callback in 20s
-    sc.enter(20, 1, callback, (sc, impath, nbr+1))
+    sc.enter(20, 1, callback, (sc, impath, vidpath, nbr+1))
     print "Compressing..."
     temps = []
     first = ""
@@ -20,7 +20,7 @@ def callback(sc, impath, nbr):
         if counter == 0:
             # need to do this here because we need first timestamp
             first = f[12:22]
-            timepath = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "videos", "time%s.txt" % first))
+            timepath = os.path.join(vidpath, "time%s.txt" % first)
             timef = open(timepath, 'w') # open timestamp file for writing
         timef.write(f[:33] + '\n') # write depth filename
         # temporary depth image filename
@@ -50,9 +50,9 @@ def callback(sc, impath, nbr):
     # the path to the libav convenience tool
     avconv = os.path.abspath(os.path.join(os.path.expanduser('~'), "libav", "bin", "avconv"))
     # depth video filename with timestamp
-    depthvideo = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "videos", "depth%s.mkv" % first))
+    depthvideo = os.path.join(vidpath, "depth%s.mkv" % first)
     # rgb video filename
-    rgbvideo = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "videos", "rgb%s.mov" % first)) # maybe this has to be mkv??
+    rgbvideo = os.path.join(vidpath, "rgb%s.mov" % first) # maybe this has to be mkv??
     # compress depth video
     os.system("%s -r 30 -i %s -pix_fmt gray16 -vsync 1 -vcodec ffv1 -coder 1 %s" % (avconv, depthimages, depthvideo))
     # compress rgb video
@@ -60,12 +60,15 @@ def callback(sc, impath, nbr):
     for f in temps: # remove compressed images
         os.remove(f)
 
-def batch_compressor(argv):
+def batch_compressor(impath, vidpath):
     # schedule callback in 20s
     s = sched.scheduler(time.time, time.sleep)
     nbr = 0
-    s.enter(20, 1, callback, (s, argv, nbr))
+    s.enter(20, 1, callback, (s, impath, vidpath, nbr))
     s.run()
 
 if __name__ == "__main__":
-    batch_compressor(sys.argv[1])
+    if len(sys.argv) < 3:
+        print "Not enough arguments to batch_compressor.py"
+    else:
+        batch_compressor(sys.argv[1], sys.argv[2])
