@@ -1,8 +1,15 @@
 #!/usr/bin/env python
 import sched, time, os, sys
 
+def create_folder(path):
+    try:
+        os.makedirs(path)
+    except OSError:
+        pass
+
 def batch_decompressor(impath, vidpath):
     print "Decompressing..."
+    create_folder(impath) # create folder for resulting images if doesn't exist
     flist = os.listdir(vidpath) # find all depth videos, order them
     flist = filter(lambda s: s[:5] == "depth", flist)
     flist.sort(key = lambda s: int(s[5:15]))
