@@ -2,6 +2,12 @@
 import sched, time, os, sys
 import shutil # for debugging, saving the original images
 
+def create_folder(path):
+    try:
+        os.makedirs(path)
+    except OSError:
+        pass
+
 def callback(sc, impath, vidpath, nbr):
     # schedule new callback in 20s
     sc.enter(20, 1, callback, (sc, impath, vidpath, nbr+1))
@@ -65,6 +71,8 @@ def callback(sc, impath, vidpath, nbr):
 
 def batch_compressor(impath, vidpath):
     # schedule callback in 20s
+    create_folder(impath) # create folder for temporary images if doesn't exist
+    create_folder(vidpath) # create folder for resulting videos
     s = sched.scheduler(time.time, time.sleep)
     nbr = 0
     s.enter(20, 1, callback, (s, impath, vidpath, nbr))
