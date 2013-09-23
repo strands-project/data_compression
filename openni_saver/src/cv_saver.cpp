@@ -15,6 +15,7 @@ namespace cv_saver {
 		boost::posix_time::ptime time = boost::posix_time::microsec_clock::local_time();
 		boost::posix_time::time_duration duration(time.time_of_day());
 		start = duration.total_milliseconds();
+		recording = true;
 	}
 
     // for saving images from one stream
@@ -50,6 +51,9 @@ namespace cv_saver {
     // for saving synched images from two streams (3 x 8 bit RGB and 1 x 16 bit Depth)
 	void synch_callback(const sensor_msgs::Image::ConstPtr& msg)
 	{
+	    if (!recording) {
+	        return;
+	    }
 	    int sec = msg->header.stamp.sec; // get message sec timestamp
 	    int nsec = msg->header.stamp.nsec; // get message nanosec timestamp
 	    ROS_INFO("Image timestamp: %d.%d, Stack: %ld:%ld", sec, nsec, depths.size(), rgbs.size());
@@ -116,5 +120,21 @@ namespace cv_saver {
 		}
         
 	}
-
+	
+	bool start_stop_recording(openni_saver::StartStopRecording::Request& req,
+                              openni_saver::StartStopRecording::Response& res)
+    {
+        if (req.action == "start") {
+            recording = true;
+            res.success = true;
+        }
+        else if (req.action == "stop") {
+            recording = false;
+            res.success = true;
+        }
+        else {
+            res.success = false;
+        }
+        return true;
+    }
 }
