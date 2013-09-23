@@ -22,6 +22,7 @@ int main(int argc, char** argv)
     std::cout << camera_topic + "/depth/image_raw" << std::endl;
 	ros::Subscriber depthSub = n.subscribe(camera_topic + "/depth/image_raw", 10, &cv_saver::synch_callback);
     ros::Subscriber rgbSub = n.subscribe(camera_topic + "/rgb/image_color", 10, &cv_saver::synch_callback);
+    ros::ServiceServer service = n.advertiseService("start_stop_recording", &cv_saver::start_stop_recording);
 	ros::spin();
 
 	return 0;

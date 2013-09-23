@@ -11,6 +11,9 @@ def callback(sc, impath, vidpath, nbr):
     counter = 0
     flist = os.listdir(impath)
     rgblist = filter(lambda s: s[:3] == "rgb", flist) # maybe do the filtering at the same time
+    if len(rgblist) == 0: # if video is paused etc, maybe < min
+        print "No images to compress, waiting..."
+        return
     rgblist.sort(key = lambda s: int(s[3:9])) # find rgb images, sort them
     flist = filter(lambda s: s[:5] == "depth", flist)
     flist.sort(key = lambda s: int(s[5:11])) # find depth images, sort them
@@ -39,8 +42,8 @@ def callback(sc, impath, vidpath, nbr):
         timef.write(rgbf[:31] + '\n') # write rgb filename
         os.rename(os.path.join(impath, f), depthtemp) # rename to know what to compress
         os.rename(os.path.join(impath, rgbf), rgbtemp)
-        shutil.copy(depthtemp, os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "debug", f))) # for debugging, saving the original images
-        shutil.copy(rgbtemp, os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "debug", rgbf))) # for debugging, saving the original images
+        #shutil.copy(depthtemp, os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "debug", f))) # for debugging, saving the original images
+        #shutil.copy(rgbtemp, os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "debug", rgbf))) # for debugging, saving the original images
         temps.append(depthtemp) # for later removal
         temps.append(rgbtemp) # for later removal
         counter += 1
