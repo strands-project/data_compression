@@ -10,7 +10,7 @@ def create_folder(path):
 
 def callback(sc, impath, vidpath, nbr):
     # schedule new callback in 20s
-    sc.enter(20, 1, callback, (sc, impath, vidpath, nbr+1))
+    sc.enter(6, 1, callback, (sc, impath, vidpath, nbr+1))
     print "Compressing..."
     temps = []
     first = ""
@@ -75,7 +75,7 @@ def batch_compressor(impath, vidpath):
     create_folder(vidpath) # create folder for resulting videos
     s = sched.scheduler(time.time, time.sleep)
     nbr = 0
-    s.enter(20, 1, callback, (s, impath, vidpath, nbr))
+    s.enter(6, 1, callback, (s, impath, vidpath, nbr))
     s.run()
 
 if __name__ == "__main__":
