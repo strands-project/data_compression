@@ -80,6 +80,7 @@ add_executable(synch_saver_node src/synch_saver_node.cpp)
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(xtion_saver_node xtion_saver_generate_messages_cpp)
+add_dependencies(cv_saver ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 #target_link_libraries(cv_saver
