@@ -15,7 +15,7 @@ namespace cv_saver {
 		boost::posix_time::ptime time = boost::posix_time::microsec_clock::local_time();
 		boost::posix_time::time_duration duration(time.time_of_day());
 		start = duration.total_milliseconds();
-		recording = true;
+		recording = false;//true;
 	}
 
     // for saving images from one stream
