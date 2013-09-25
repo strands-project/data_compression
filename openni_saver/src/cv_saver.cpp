@@ -56,7 +56,7 @@ namespace cv_saver {
 	    }
 	    int sec = msg->header.stamp.sec; // get message sec timestamp
 	    int nsec = msg->header.stamp.nsec; // get message nanosec timestamp
-	    ROS_INFO("Image timestamp: %d.%d, Stack: %ld:%ld", sec, nsec, depths.size(), rgbs.size());
+	    //ROS_INFO("Image timestamp: %d.%d, Stack: %ld:%ld", sec, nsec, depths.size(), rgbs.size());
 	    boost::shared_ptr<sensor_msgs::Image> tracked_object;
 		cv_bridge::CvImageConstPtr cv_img_boost_ptr;
 		try {
