@@ -28,14 +28,15 @@ def callback(sc, impath, vidpath, nbr):
             continue
         if counter == 0:
             # need to do this here because we need first timestamp
-            first = f[12:22]
-            timepath = os.path.join(vidpath, "time%s.txt" % first)
+            #first = f[12:22]
+            #timepath = os.path.join(vidpath, "time%s.txt" % first)
+            timepath = os.path.join(vidpath, "time%010d.txt" % nbr)
             timef = open(timepath, 'w') # open timestamp file for writing
         timef.write(f[:33] + '\n') # write depth filename
         # temporary depth image filename
-        depthtemp = os.path.join(impath, "tempdepth%06d.png" % counter)
+        depthtemp = os.path.join(impath, "tempdepth%010d-%06d.png" % (nbr, counter))
         # temporary rgb image filename
-        rgbtemp = os.path.join(impath, "temprgb%06d.png" % counter)
+        rgbtemp = os.path.join(impath, "temprgb%010d-%06d.png" % (nbr, counter))
         ind = -1
         for i, r in enumerate(rgblist): # find corresponding rgb image
             if r[3:9] == f[5:11]:
@@ -54,14 +55,18 @@ def callback(sc, impath, vidpath, nbr):
         temps.append(rgbtemp) # for later removal
         counter += 1
     timef.close()
-    depthimages = os.path.join(impath, "tempdepth%06d.png") # formatting of files for libav
-    rgbimages = os.path.join(impath, "temprgb%06d.png")
+    #depthimages = os.path.join(impath, "tempdepth%06d.png") # formatting of files for libav
+    depthimages = os.path.join(impath, "tempdepth%010d" % nbr + "-%06d.png") # formatting of files for libav
+    #rgbimages = os.path.join(impath, "temprgb%06d.png")
+    rgbimages = os.path.join(impath, "temprgb%010d" % nbr + "-%06d.png")
     # the path to the libav convenience tool
     avconv = os.path.abspath(os.path.join(os.path.expanduser('~'), "libav", "bin", "avconv"))
     # depth video filename with timestamp
-    depthvideo = os.path.join(vidpath, "depth%s.mkv" % first)
+    #depthvideo = os.path.join(vidpath, "depth%s.mkv" % first)
+    depthvideo = os.path.join(vidpath, "depth%010d.mkv" % nbr)
     # rgb video filename
-    rgbvideo = os.path.join(vidpath, "rgb%s.mov" % first) # maybe this has to be mkv??
+    #rgbvideo = os.path.join(vidpath, "rgb%s.mov" % first) # maybe this has to be mkv??
+    rgbvideo = os.path.join(vidpath, "rgb%010d.mov" % nbr)
     # compress depth video
     os.system("%s -r 30 -i %s -pix_fmt gray16 -vsync 1 -vcodec ffv1 -coder 1 %s" % (avconv, depthimages, depthvideo))
     # compress rgb video
