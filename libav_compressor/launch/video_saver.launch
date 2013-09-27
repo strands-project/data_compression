@@ -5,7 +5,7 @@
     <!-- Save images from openni_launch topics to video, online into smaller videos -->
     <!-- Used by strandsbag record -->
     <!-- Launch saving of depth images -->
-    <node pkg="openni_saver" type="synch_saver_node" name="synch_saver_node" output="screen">
+    <node pkg="openni_saver" type="openni_saver_node" name="openni_saver_node" output="screen">
         <param name="image_folder" value="$(find openni_saver)/images"/>
         <param name="camera_topic" value="head_xtion"/>
     </node>
