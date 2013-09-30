@@ -83,6 +83,7 @@ add_executable(openni_saver_node src/openni_saver_node.cpp)
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(xtion_saver_node xtion_saver_generate_messages_cpp)
 add_dependencies(cv_saver ${catkin_EXPORTED_TARGETS})
+add_dependencies(openni_image_saver ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 #target_link_libraries(cv_saver
