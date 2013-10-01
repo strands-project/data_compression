@@ -31,6 +31,7 @@ find_package(OpenCV REQUIRED)
 add_service_files(
   FILES
   StartStopRecording.srv
+  LoggingService.srv
 )
 
 ## Generate added messages and services with any dependencies listed here
