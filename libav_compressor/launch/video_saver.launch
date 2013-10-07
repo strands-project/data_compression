@@ -1,15 +1,17 @@
 <launch>
-    <!-- Directory to store the videos -->
-    <arg name="video_path" default="$(find libav_compressor)/videos"/>
+
+    <!-- The folder where the images are to be stored -->
+    <arg name="bag_folder"/>
 
     <!-- Save images from openni_launch topics to video, online into smaller videos -->
     <!-- Used by strandsbag record -->
     <!-- Launch saving of depth images -->
     <node pkg="openni_saver" type="openni_saver_node" name="openni_saver_node" output="screen">
-        <param name="image_folder" value="$(find openni_saver)/images"/>
         <param name="camera_topic" value="head_xtion"/>
+        <param name="video_length" value="6"/>
+        <param name="bag_folder" value="$(arg bag_folder)"/>
     </node>
     <!-- Launch compressor -->
-	<node pkg="libav_compressor" type="batch_compressor.py" name="batch_compressor" args="$(find openni_saver)/images $(arg video_path)" output="screen"/>
+	<node pkg="libav_compressor" type="online_compressor.py" name="online_compressor" output="screen"/>
 e>
 </launch>

@@ -41,7 +41,6 @@ class online_compressor():
         srv = rospy.Service('compression_service', CompressionService, self.compression_service)
         # Create a publisher that sends message when compression done
         pub = rospy.Publisher("compression_done", String)
-        #rospy.spin() # we apparently don't need this
         #queue_lock = Lock()
         while not rospy.is_shutdown():
             #queue_lock.acquire()
