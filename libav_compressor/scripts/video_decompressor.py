@@ -12,9 +12,11 @@ class video_decompressor():
         depthvideo = os.path.join(folder, "depth.mkv")
         
         # decompress the depth video
-        os.system("%s -i %s -f image2 -pix_fmt gray16 %s" % (self.avconv, depthvideo, depthimages))
+        if os.path.isfile(depthvideo):
+            os.system("%s -i %s -f image2 -pix_fmt gray16 %s" % (self.avconv, depthvideo, depthimages))
         # decompress the rgb video
-        os.system("%s -i %s -f image2 %s" % (self.avconv, rgbvideo, rgbimages))
+        if os.path.isfile(rgbvideo):
+            os.system("%s -i %s -f image2 %s" % (self.avconv, rgbvideo, rgbimages))
 
     def __init__(self):
         folder = rospy.get_param("~folder", 'default')

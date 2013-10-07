@@ -21,11 +21,11 @@ openni_image_saver::openni_image_saver(ros::ServiceClient& client, int video_len
     with_compression = true; // should be argument
     
     if (video_length > 0) { // create bag folder
-        boost::filesystem::path dir(bag_folder);
+        /*boost::filesystem::path dir(bag_folder);
         if(bag_folder.empty() || !boost::filesystem::create_directory(dir)) {
             std::cout << bag_folder << std::endl;
 	        ROS_ERROR("Failed to create new parent directory.");
-        }
+        }*/
         parent_folder = bag_folder;
         start_recording("");
     }

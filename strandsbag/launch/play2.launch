@@ -5,7 +5,6 @@
     </rosparam>
     
     <!-- The file name of the rosbag to play -->
-    <arg name="o"/>  
     <arg name="bag_folder"/>
     
     <!-- Option to suppress output -->
@@ -34,7 +33,7 @@
     <arg name="dopause" value="" unless="$(arg pause)"/>
     
     <!-- Launch the rosbag -->
-    <node pkg="rosbag" type="play" name="player" output="screen" args="$(arg o) --clock $(arg dopause) $(arg keepalive) $(arg loop) $(arg quiet) $(arg immediate)"/>
+    <node pkg="rosbag" type="play" name="player" output="screen" args="$(arg bag_folder)/bag.bag --clock $(arg dopause) $(arg keepalive) $(arg loop) $(arg quiet) $(arg immediate)"/>
     
     <!-- Launch the node streaming the images from a folder -->
 	<node pkg="strandsbag" type="image_player_node" name="image_player_node" output="screen">
