@@ -66,11 +66,9 @@ include_directories(include
 )
 
 ## Declare a cpp library
-add_library(bag_player src/bag_player.cpp)
 add_library(folder_player src/folder_player.cpp)
 
 ## Declare a cpp executable
-add_executable(image_player src/image_player.cpp)
 add_executable(image_player_node src/image_player_node.cpp)
 
 ## Add cmake target dependencies of the executable/library
@@ -78,17 +76,8 @@ add_executable(image_player_node src/image_player_node.cpp)
 # add_dependencies(strandsbag_node strandsbag_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(bag_player
-  ${catkin_LIBRARIES}
-)
-
 target_link_libraries(folder_player
   ${catkin_LIBRARIES}
-)
-
-
-target_link_libraries(image_player
-  bag_player ${catkin_LIBRARIES}
 )
 
 target_link_libraries(image_player_node

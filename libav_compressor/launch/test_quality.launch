@@ -1,7 +1,0 @@
-<launch>
-    <!-- This just launches the test_quality program with the correct paths -->
-    <!-- You need to run video_saver or strandsbag record before doing this -->
-    <!-- You have to remove the debugging comments in batch_compressor.py before -->
-	<node pkg="libav_compressor" type="test_quality" name="test_quality" args="$(find libav_compressor)/debug $(find libav_compressor)/images" output="screen"/>
-e>
-</launch>

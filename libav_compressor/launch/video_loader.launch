@@ -1,8 +1,0 @@
-<launch>
-    <!-- Directory to load the videos -->
-    <arg name="video_path" default="$(find libav_compressor)/videos"/>
-    
-    <!-- Decompress the videos recorded with video_saver or strandsbag record -->
-	<node pkg="libav_compressor" type="batch_decompressor.py" name="batch_decompressor" args="$(find libav_compressor)/images $(arg video_path)" output="screen"/>
-e>
-</launch>

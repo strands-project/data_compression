@@ -30,7 +30,6 @@ find_package(OpenCV REQUIRED)
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
-  StartStopRecording.srv
   LoggingService.srv
 )
 
@@ -71,19 +70,14 @@ include_directories(include
 #link_directories(/opt/ros/groovy/lib)
 
 ## Declare a cpp library
-add_library(cv_saver src/cv_saver.cpp)
 add_library(openni_image_saver src/openni_image_saver.cpp)
 
 ## Declare a cpp executable
-add_executable(depth_saver_node src/depth_saver_node.cpp)
-add_executable(rgb_saver_node src/rgb_saver_node.cpp)
-add_executable(synch_saver_node src/synch_saver_node.cpp)
 add_executable(openni_saver_node src/openni_saver_node.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(xtion_saver_node xtion_saver_generate_messages_cpp)
-add_dependencies(cv_saver ${catkin_EXPORTED_TARGETS})
 add_dependencies(openni_image_saver ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
@@ -92,22 +86,6 @@ add_dependencies(openni_image_saver ${catkin_EXPORTED_TARGETS})
 #)
 
 # Just for opencv bridge
-target_link_libraries(cv_saver
-   ${catkin_LIBRARIES}
-)
-
-target_link_libraries(depth_saver_node
-   ${catkin_LIBRARIES}
-)
-
-target_link_libraries(rgb_saver_node
-   ${catkin_LIBRARIES}
-)
-
-target_link_libraries(synch_saver_node
-   ${catkin_LIBRARIES}
-)
-
 target_link_libraries(openni_image_saver
    ${catkin_LIBRARIES}
 )
@@ -119,12 +97,8 @@ target_link_libraries(openni_saver_node
 # FOR BUILDING WITH ORDINARY CMAKE
 #target_link_libraries(cv_saver opencv_calib3d opencv_core opencv_flann opencv_highgui opencv_legacy opencv_nonfree opencv_photo opencv_ts opencv_videostab opencv_contrib opencv_features2d opencv_gpu  opencv_imgproc opencv_ml opencv_objdetect opencv_stitching opencv_video cv_bridge)
 
-target_link_libraries(cv_saver ${OpenCV_LIBS})
 target_link_libraries(openni_image_saver ${OpenCV_LIBS})
 
-target_link_libraries(depth_saver_node cv_saver)
-target_link_libraries(rgb_saver_node cv_saver)
-target_link_libraries(synch_saver_node cv_saver)
 target_link_libraries(openni_saver_node openni_image_saver)
 
 #############
