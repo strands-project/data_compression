@@ -47,7 +47,7 @@ void openni_image_saver::image_callback(const sensor_msgs::Image::ConstPtr& dept
     int rgb_sec = rgb_msg->header.stamp.sec; // get message sec timestamp
     int rgb_nsec = rgb_msg->header.stamp.nsec; // get message nanosec timestamp
     
-    ROS_INFO("Depth image timestamp: %d.%d, RGB image timestamp: %d.%d", depth_sec, depth_nsec, rgb_sec, rgb_nsec);
+    //ROS_INFO("Depth image timestamp: %d.%d, RGB image timestamp: %d.%d", depth_sec, depth_nsec, rgb_sec, rgb_nsec);
     
     // convert message to opencv images for saving
     boost::shared_ptr<sensor_msgs::Image> depth_tracked_object;
