@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
+#include <sstream>
 
 openni_image_saver::openni_image_saver(ros::ServiceClient& client, int video_length, std::string bag_folder) :
     client(client), video_length(1000*video_length), current_folder(""), parent_folder("")
@@ -27,8 +28,19 @@ openni_image_saver::openni_image_saver(ros::ServiceClient& client, int video_len
 	        ROS_ERROR("Failed to create new parent directory.");
         }*/
         parent_folder = bag_folder;
-        start_recording("");
+        start_recording(ros_time_string());
     }
+}
+
+std::string openni_image_saver::ros_time_string()
+{
+    ros::Time now = ros::Time::now();
+    std::stringstream s;
+    s << now;
+    //s << std::setfill('0') << std::setw(10) << now.sec;
+    //s << ".";
+    //s << std::setfill('0') << std::setw(9) << now.nsec;
+    return s.str();
 }
 
 void openni_image_saver::image_callback(const sensor_msgs::Image::ConstPtr& depth_msg,
@@ -110,7 +122,7 @@ void openni_image_saver::image_callback(const sensor_msgs::Image::ConstPtr& dept
 	
 	if (!at_waypoint && video_length > 0 && delta > video_length) {
 	    stop_recording();
-	    start_recording("");
+	    start_recording(ros_time_string());
 	    start = 0;
 	}
 }
@@ -182,7 +194,7 @@ bool openni_image_saver::logging_service(openni_saver::LoggingService::Request& 
     else if (req.action == "stop") { // stop recording at waypoint
         stop_recording();
         if (video_length > 0) {
-            if (!start_recording("")) { // timestamp would be better
+            if (!start_recording(ros_time_string())) { // timestamp would be better
                 res.success = false;
                 return false;
             }

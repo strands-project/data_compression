@@ -25,6 +25,7 @@ private:
     bool start_recording(const std::string& folder);
     bool stop_recording();
     int get_time();
+    std::string ros_time_string();
 public:
     void image_callback(const sensor_msgs::Image::ConstPtr& depth_msg,
                         const sensor_msgs::Image::ConstPtr& rgb_msg);

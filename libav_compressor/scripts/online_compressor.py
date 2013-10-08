@@ -7,7 +7,7 @@ from std_msgs.msg import String
 from threading import Thread, Lock
 from Queue import Queue
 
-def compress_folder(id, result_queue, folder):
+def compress_folder(result_queue, folder):
     rgbimages = os.path.join(folder, "rgb%06d.png")
     depthimages = os.path.join(folder, "depth%06d.png")
     
@@ -27,39 +27,30 @@ def compress_folder(id, result_queue, folder):
         if len(f) > 10:
             os.remove(os.path.join(folder, f))
     
-    result_queue.put((id, folder))
+    result_queue.put(folder)
 
 class online_compressor():
 
     def __init__(self):
         self.queue = Queue()
-        self.threads = []
-        #self.param = rospy.get_param('~some_param', 'default)
-        self.parent_folder = None
-        self.image_folder = None
         # not sure about the name
         srv = rospy.Service('compression_service', CompressionService, self.compression_service)
         # Create a publisher that sends message when compression done
         pub = rospy.Publisher("compression_done", String)
-        #queue_lock = Lock()
         while not rospy.is_shutdown():
-            #queue_lock.acquire()
             if not self.queue.empty():
                 val = self.queue.get()
-                self.threads.pop(val[0])
-                pub.publish(val[1])
-                print "Publishing %s" % val[1]
-            else:
+                pub.publish(val)
+                print "Publishing %s" % val
+            else: # remove
                 print 'empty'
-            #queue_lock.release()
             rospy.sleep(1.0)
     
     def compression_service(self, req):
         folder = req.folder
-        thread = Thread(target = compress_folder, args=(len(self.threads), self.queue, folder))
+        thread = Thread(target = compress_folder, args=(self.queue, folder))
         thread.start()
-        self.threads.append(thread)
-        return True   
+        return True
         
     def create_folder(self, path):
         try:
