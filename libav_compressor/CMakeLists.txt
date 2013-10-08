@@ -47,7 +47,7 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-   INCLUDE_DIRS include
+#  INCLUDE_DIRS include
 #  LIBRARIES xtion_saver
 #  CATKIN_DEPENDS roscpp
 #  DEPENDS system_lib
@@ -72,7 +72,7 @@ link_directories(/opt/ros/groovy/lib)
 ## Declare a cpp executable
 # add_executable(xtion_saver src/xtion_saver.cpp)
 #add_executable(depth_saver_node src/depth_saver_node.cpp)
-add_executable(test_quality src/test_quality.cpp)
+#add_executable(test_quality src/test_quality.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -83,11 +83,11 @@ add_executable(test_quality src/test_quality.cpp)
  #  ${catkin_LIBRARIES}
 #)
 
-target_link_libraries(test_quality
-   ${catkin_LIBRARIES}
-)
+#target_link_libraries(test_quality
+#   ${catkin_LIBRARIES}
+#)
 
-target_link_libraries(test_quality opencv_calib3d opencv_core opencv_flann opencv_highgui opencv_legacy opencv_nonfree opencv_photo opencv_ts opencv_videostab opencv_contrib opencv_features2d opencv_gpu  opencv_imgproc opencv_ml opencv_objdetect opencv_stitching opencv_video cv_bridge)
+#target_link_libraries(test_quality opencv_calib3d opencv_core opencv_flann opencv_highgui opencv_legacy opencv_nonfree opencv_photo opencv_ts opencv_videostab opencv_contrib opencv_features2d opencv_gpu  opencv_imgproc opencv_ml opencv_objdetect opencv_stitching opencv_video cv_bridge)
 
 #############
 ## Install ##
