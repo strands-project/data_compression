@@ -5,9 +5,11 @@ import rospy
 class video_decompressor():
 
     def decompress_folder(self, folder):
+        # image names, numbered from 1
         rgbimages = os.path.join(folder, "rgb%06d.png")
         depthimages = os.path.join(folder, "depth%06d.tiff")
         
+        # video names
         rgbvideo = os.path.join(folder, "rgb.mov")
         depthvideo = os.path.join(folder, "depth.mkv")
         
@@ -21,7 +23,9 @@ class video_decompressor():
     def __init__(self):
         folder = rospy.get_param("~folder", 'default')
         dlist = os.listdir(folder)
+        # path to the install of libav
         self.avconv = os.path.abspath(os.path.join(os.path.expanduser('~'), "libav", "bin", "avconv"))
+        # just go through the folders, decompress them if videos exist
         for d in dlist:
             dpath = os.path.join(folder, d)
             if os.path.isdir(dpath):

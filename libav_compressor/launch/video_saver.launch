@@ -1,6 +1,6 @@
 <launch>
 
-    <!-- The folder where the images are to be stored -->
+    <!-- The folder where the bag and images are to be stored -->
     <arg name="bag_folder"/>
 
     <!-- Save images from openni_launch topics to video, online into smaller videos -->

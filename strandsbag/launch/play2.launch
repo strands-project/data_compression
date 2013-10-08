@@ -4,7 +4,7 @@
         use_sim_time : true
     </rosparam>
     
-    <!-- The file name of the rosbag to play -->
+    <!-- The folder where we find the rosbag and the compressed videos -->
     <arg name="bag_folder"/>
     
     <!-- Option to suppress output -->

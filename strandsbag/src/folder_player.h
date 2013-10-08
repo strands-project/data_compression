@@ -23,13 +23,13 @@ private:
     ros::Timer depth_timer; // Sets timer to publish according to timestamp
     ros::Timer rgb_timer;
     
-    std::vector<std::pair<std::string, double> > dirs;
-    std::deque<int> depth_secs;
-    std::deque<int> depth_nsecs;
-    std::deque<int> rgb_secs;
-    std::deque<int> rgb_nsecs;
-    std::deque<std::string> depth_names;
-    std::deque<std::string> rgb_names;
+    std::vector<std::pair<std::string, double> > dirs; // folder to be played + first timestamp
+    std::deque<int> depth_secs; // depth sec timestamps
+    std::deque<int> depth_nsecs; // depth nanosec timestamps
+    std::deque<int> rgb_secs; // rgb sec timestamps
+    std::deque<int> rgb_nsecs; // rgb nanosec timestamps
+    std::deque<std::string> depth_names; // depth filenames
+    std::deque<std::string> rgb_names; // rgb filenames
     
     int dir_nbr;
     bool shutting_down;

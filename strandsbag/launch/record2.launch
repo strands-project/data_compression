@@ -4,7 +4,7 @@
         use_sim_time : false
     </rosparam>
     
-    <!-- The name of the rosbag to be saved -->
+    <!-- The folder where the rosbag is stored together with the videos -->
     <arg name="bag_folder"/>
     
     <!-- Option to suppress output -->

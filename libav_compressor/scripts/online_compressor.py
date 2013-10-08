@@ -8,12 +8,13 @@ from threading import Thread, Lock
 from Queue import Queue
 
 def compress_folder(result_queue, folder):
-    rgbimages = os.path.join(folder, "rgb%06d.png")
+    rgbimages = os.path.join(folder, "rgb%06d.png") # name structure of images to be compressed
     depthimages = os.path.join(folder, "depth%06d.png")
     
-    rgbvideo = os.path.join(folder, "rgb.mov")
-    depthvideo = os.path.join(folder, "depth.mkv")
+    rgbvideo = os.path.join(folder, "rgb.mov") # resulting rgb video
+    depthvideo = os.path.join(folder, "depth.mkv") # resulting depth video
     
+    # the install path of avconv, defaults to ~/libav/bin/avconv, should be argument
     avconv = os.path.abspath(os.path.join(os.path.expanduser('~'), "libav", "bin", "avconv"))
     
     # compress depth video
@@ -23,36 +24,35 @@ def compress_folder(result_queue, folder):
     
     flist = os.listdir(folder)
     
+    # remove compressed images
     for f in flist:
         if len(f) > 10:
             os.remove(os.path.join(folder, f))
     
-    result_queue.put(folder)
+    result_queue.put(folder) # put the folder name on the completed queue
 
 class online_compressor():
 
     def __init__(self):
-        self.queue = Queue()
-        # not sure about the name
+        self.queue = Queue() # result queue, folder names are put here when complete
         srv = rospy.Service('compression_service', CompressionService, self.compression_service)
         # Create a publisher that sends message when compression done
         pub = rospy.Publisher("compression_done", String)
         while not rospy.is_shutdown():
-            if not self.queue.empty():
-                val = self.queue.get()
+            # no locks needed, queue manages that
+            if not self.queue.empty(): # check if any were compressed
+                val = self.queue.get() # get latest compressed folder
                 pub.publish(val)
                 print "Publishing %s" % val
-            else: # remove
-                print 'empty'
             rospy.sleep(1.0)
     
-    def compression_service(self, req):
+    def compression_service(self, req): # start a new compression thread
         folder = req.folder
         thread = Thread(target = compress_folder, args=(self.queue, folder))
-        thread.start()
+        thread.start() # no need to manage threads in python, automatic gc
         return True
         
-    def create_folder(self, path):
+    def create_folder(self, path): # not really needed anymore
         try:
             os.makedirs(path)
         except OSError:

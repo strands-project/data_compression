@@ -8,6 +8,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "image_player_node");
 	ros::NodeHandle n;
 	
+	// the folder where the videos and ros bag are
     if (!n.hasParam("/image_player_node/bag_folder")) {
         ROS_ERROR("Could not find parameter bag_folder.");
         return -1;
@@ -15,6 +16,7 @@ int main(int argc, char** argv)
     std::string bag_folder;
     n.getParam("/image_player_node/bag_folder", bag_folder);
     
+    // topic of the depth and rgb images
     if (!n.hasParam("/image_player_node/camera_topic")) {
         ROS_ERROR("Could not find parameter camera_topic.");
         return -1;

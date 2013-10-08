@@ -12,41 +12,33 @@
 openni_image_saver::openni_image_saver(ros::ServiceClient& client, int video_length, std::string bag_folder) :
     client(client), video_length(1000*video_length), current_folder(""), parent_folder("")
 {
-    boost::posix_time::ptime time = boost::posix_time::microsec_clock::local_time();
-	boost::posix_time::time_duration duration(time.time_of_day());
-    start = 0;
-    recording = video_length > 0;
-    at_waypoint = false;
-    counter = 1;
-    waypoint = 0;
+    start = 0; // clock not initialized
+    recording = video_length > 0; // if not constant recording, send in video_length = 0
+    at_waypoint = false; // recording at waypoint
+    counter = 1; // image number
+    waypoint = 0; // waypoint number
     with_compression = true; // should be argument
     
-    if (video_length > 0) { // create bag folder
-        /*boost::filesystem::path dir(bag_folder);
-        if(bag_folder.empty() || !boost::filesystem::create_directory(dir)) {
-            std::cout << bag_folder << std::endl;
-	        ROS_ERROR("Failed to create new parent directory.");
-        }*/
+    if (video_length > 0) { // if constant recording, start directly
         parent_folder = bag_folder;
         start_recording(ros_time_string());
     }
 }
 
+// gives current ros time as string
 std::string openni_image_saver::ros_time_string()
 {
     ros::Time now = ros::Time::now();
     std::stringstream s;
     s << now;
-    //s << std::setfill('0') << std::setw(10) << now.sec;
-    //s << ".";
-    //s << std::setfill('0') << std::setw(9) << now.nsec;
     return s.str();
 }
 
+// called by the synchronizer, always with depth + rgb
 void openni_image_saver::image_callback(const sensor_msgs::Image::ConstPtr& depth_msg,
                                         const sensor_msgs::Image::ConstPtr& rgb_msg)
 {
-    if (!recording) {
+    if (!recording) { // if not recording don't save
         return;
     }
     
@@ -56,6 +48,8 @@ void openni_image_saver::image_callback(const sensor_msgs::Image::ConstPtr& dept
     int rgb_nsec = rgb_msg->header.stamp.nsec; // get message nanosec timestamp
     
     ROS_INFO("Depth image timestamp: %d.%d, RGB image timestamp: %d.%d", depth_sec, depth_nsec, rgb_sec, rgb_nsec);
+    
+    // convert message to opencv images for saving
     boost::shared_ptr<sensor_msgs::Image> depth_tracked_object;
 	cv_bridge::CvImageConstPtr depth_cv_img_boost_ptr;
 	try {
@@ -82,12 +76,6 @@ void openni_image_saver::image_callback(const sensor_msgs::Image::ConstPtr& dept
     compression.push_back(0); // no compression
     
     char buffer[250];
-    // save images with identifier, seconds and nanosec timestamps
-    /*sprintf(buffer, "%s/rgb%06ld-%010d-%010d.png", current_folder.c_str(), counter, rgb_sec, rgb_nsec);
-    cv::imwrite(buffer, rgb_cv_img_boost_ptr->image, compression);
-    
-    sprintf(buffer, "%s/depth%06ld-%010d-%010d.png", current_folder.c_str(), counter, depth_sec, depth_nsec);
-    cv::imwrite(buffer, depth_cv_img_boost_ptr->image, compression);*/
     
     sprintf(buffer, "%s/rgb%06ld.png", current_folder.c_str(), counter);
     cv::imwrite(buffer, rgb_cv_img_boost_ptr->image, compression);
@@ -95,6 +83,7 @@ void openni_image_saver::image_callback(const sensor_msgs::Image::ConstPtr& dept
     sprintf(buffer, "%s/depth%06ld.png", current_folder.c_str(), counter);
     cv::imwrite(buffer, depth_cv_img_boost_ptr->image, compression);
     
+    // write the timestamps to time.txt
     timestamps << "rgb";
     timestamps << std::setfill('0') << std::setw(6) << counter; // temporary
     timestamps << "-"; // temporary
@@ -120,6 +109,7 @@ void openni_image_saver::image_callback(const sensor_msgs::Image::ConstPtr& dept
 	    delta = get_time() - start;
 	}
 	
+	// if video_length exceeded, start new video
 	if (!at_waypoint && video_length > 0 && delta > video_length) {
 	    stop_recording();
 	    start_recording(ros_time_string());
@@ -136,7 +126,7 @@ int openni_image_saver::get_time()
 
 void openni_image_saver::compress_folder()
 {
-    // launch a new online compressor instance
+    // call online compressor to start new compression thread
     libav_compressor::CompressionService srv;
     srv.request.folder = current_folder;
     if (!client.call(srv)) {
@@ -154,6 +144,7 @@ bool openni_image_saver::stop_recording()
     return true;
 }
 
+// create new folder and timestamps file
 bool openni_image_saver::start_recording(const std::string& folder)
 {
     if (parent_folder.empty()) {
@@ -177,6 +168,7 @@ bool openni_image_saver::start_recording(const std::string& folder)
     return true;
 }
 
+// service function, call it with start, stop or new as action
 bool openni_image_saver::logging_service(openni_saver::LoggingService::Request& req,
                                          openni_saver::LoggingService::Response& res)
 {
