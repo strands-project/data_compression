@@ -1,6 +1,11 @@
 <launch>
-    <!-- The name of the rosbag to be saved -->
-    <arg name="o"/>
+    <!-- We need to set use_sim_time because it might be set to true when playing -->
+    <rosparam>
+        use_sim_time : false
+    </rosparam>
+    
+    <!-- The folder where the rosbag is stored together with the videos -->
+    <arg name="bag_folder"/>
     
     <!-- Option to suppress output -->
     <arg name="q" default="false"/>
@@ -13,13 +18,10 @@
     <arg name="bz2" value="" unless="$(arg j)"/>
     
     <!-- Record a rosbag, use regular expressions to exclude images -->
-    <node pkg="rosbag" type="record" name="recorder" output="screen" args="-a -x &quot;/head_xtion/(.*)&quot; $(arg quiet) $(arg bz2) -o $(arg o)"/>
-    
-    <arg name="video_path" default="$(find libav_compressor)/videos"/>
+    <node pkg="rosbag" type="record" name="recorder" output="screen" args="-a -x &quot;/head_xtion/(.*)&quot; $(arg quiet) $(arg bz2) -O $(arg bag_folder)/bag"/>
     
     <!-- Save the images published by openni_launch -->
 	<include file="$(find libav_compressor)/launch/video_saver.launch">
-	    <arg name="video_path" value="$(arg video_path)"/>
+	    <arg name="bag_folder" value="$(arg bag_folder)"/>
 	</include>
-e>
 </launch>

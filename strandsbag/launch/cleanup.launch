@@ -1,9 +1,0 @@
-<launch>
-    
-    <!-- Remove the last few files that werent compressed before cancelling -->
-    <node pkg="strandsbag" type="remove_files.py" name="remove_temporary" args="$(find openni_saver)/images" output="screen"/>
-    
-    <!-- Remove the decompressed files that are used by strandsbag play -->
-    <node pkg="strandsbag" type="remove_files.py" name="remove_decompressed" args="$(find libav_compressor)/images" output="screen"/>
-    
-</launch>

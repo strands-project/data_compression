@@ -4,8 +4,8 @@
         use_sim_time : true
     </rosparam>
     
-    <!-- The file name of the rosbag to play -->
-    <arg name="o"/>
+    <!-- The folder where we find the rosbag and the compressed videos -->
+    <arg name="bag_folder"/>
     
     <!-- Option to suppress output -->
     <arg name="q" default="false"/>
@@ -33,11 +33,11 @@
     <arg name="dopause" value="" unless="$(arg pause)"/>
     
     <!-- Launch the rosbag -->
-    <node pkg="rosbag" type="play" name="player" output="screen" args="$(arg o) --clock $(arg dopause) $(arg keepalive) $(arg loop) $(arg quiet) $(arg immediate)"/>
+    <node pkg="rosbag" type="play" name="player" output="screen" args="$(arg bag_folder)/bag.bag --clock $(arg dopause) $(arg keepalive) $(arg loop) $(arg quiet) $(arg immediate)"/>
     
     <!-- Launch the node streaming the images from a folder -->
-	<node pkg="strandsbag" type="image_player" name="image_player" args="$(find libav_compressor)/images" output="screen">
-	    <param name="image_folder" value="$(find libav_compressor)/images"/>
+	<node pkg="strandsbag" type="image_player_node" name="image_player_node" output="screen">
+	    <param name="bag_folder" value="$(arg bag_folder)"/>
 	    <param name="camera_topic" value="head_xtion"/>
     </node>
 e>
