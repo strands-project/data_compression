@@ -1,0 +1,82 @@
+<launch>
+  <arg name="camera"   			default="camera" />
+  <arg name="manager" 			default="manager" />
+  <arg name="rgb" 			default="$(arg camera)/rgb/image_raw" /> 
+  <arg name="depth" 			default="$(arg camera)/depth/image_raw" />
+  <arg name="rgb_camera_info" 		default="$(arg camera)/rgb/camera_info" /> 
+  <arg name="depth_camera_info" 	default="$(arg camera)/depth/camera_info" />  
+
+  <!-- Nodelet manager for this pipeline -->
+  <node pkg="nodelet" type="nodelet" args="manager"
+        name="manager" output="screen"/>
+
+ <!-- RGB processing -->
+  <node pkg="image_proc" type="image_proc" name="image_proc">
+	<remap from="image_raw"  to="$(arg rgb)" />
+	<remap from="camera_info"  to="$(arg rgb_camera_info)" />
+	<remap from="image_mono"  to="$(arg camera)/rgb/image_mono" />
+	<remap from="image_rect"  to="$(arg camera)/rgb/image_rect" />
+	<remap from="image_color"  to="$(arg camera)/rgb/image_color" />
+	<remap from="image_rect_color"  to="$(arg camera)/rgb/image_rect_color" />
+  </node>
+ 
+  <arg name="respawn" default="true" />
+  <arg name="rectify" default="true" />
+  <arg if="$(arg respawn)" name="bond" value="" />
+  <arg unless="$(arg respawn)" name="bond" value="--no-bond" />
+
+  <!-- Rectified raw image (internal use) -->
+  <node pkg="nodelet" type="nodelet" name="rectify_depth"
+        args="load image_proc/rectify $(arg manager) --no-bond">
+   <remap from="image_mono"  to="$(arg depth)" />
+   <remap from="camera_info"  to="$(arg depth_camera_info)" /> 
+   <remap from="image_rect"  to="$(arg camera)/depth/image_rect_raw" />
+  </node>
+
+  <!-- Rectified depth image -->
+  <node pkg="nodelet" type="nodelet" name="metric_rect"
+        args="load depth_image_proc/convert_metric $(arg manager) --no-bond"
+        respawn="$(arg respawn)">
+    <remap from="image_raw" to="$(arg camera)/depth/image_rect_raw" />
+    <remap from="image"     to="$(arg camera)/depth/image_rect_meters" />
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="points"
+        args="load depth_image_proc/point_cloud_xyz $(arg manager)"
+        respawn="$(arg respawn)">
+    <remap from="image_rect" to="$(arg camera)/depth/image_rect_raw"/>  
+    <remap from="camera_info" to="$(arg depth_camera_info)"/>  
+  </node>
+
+  <!-- Registration nodelet, projecting depth to RGB camera -->
+  <node pkg="nodelet" type="nodelet" name="register_depth_rgb"
+        args="load depth_image_proc/register $(arg manager)">
+    <remap from="rgb/camera_info" to="$(arg rgb_camera_info)"/>  
+    <remap from="depth/camera_info" to="$(arg depth_camera_info)"/>  
+    <remap from="depth/image_rect" to="$(arg camera)/depth/image_rect_raw"/>
+    <remap from="depth_registered/camera_info" to="$(arg camera)/depth_registered/camera_info"/>  
+    <remap from="depth_registered/image_rect" to="$(arg camera)/depth_registered/image_rect"/>    
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="points_xyzrgb_depth_rgb"
+        args="load depth_image_proc/point_cloud_xyzrgb $(arg manager) --no-bond"
+        respawn="$(arg respawn)">
+	<remap from="rgb/camera_info" to="$(arg rgb_camera_info)"/>
+  	<remap from="rgb/image_rect_color" to="$(arg camera)/rgb/image_rect_color"/>    
+        <remap from="depth_registered/image_rect" to="$(arg camera)/depth_registered/image_rect"/>    
+  </node>
+
+  <!-- Disparity image -->
+  <node pkg="nodelet" type="nodelet" name="disparity_depth"
+        args="load depth_image_proc/disparity $(arg manager) --no-bond"
+        respawn="$(arg respawn)">
+    <!-- Use raw image for efficiency -->
+    <remap from="left/image_rect" to="$(arg camera)/depth/image_rect_raw" />
+    <remap from="right/camera_info" to="$(arg rgb_camera_info)" />
+    <remap from="left/disparity" to="depth/disparity" />
+
+    <param name="min_range" value="0.5" />
+    <param name="max_range" value="4.0" />
+  </node>
+</launch>
+
