@@ -40,5 +40,10 @@
 	    <param name="bag_folder" value="$(arg bag_folder)"/>
 	    <param name="camera_topic" value="head_xtion"/>
     </node>
-e>
+    
+    <!-- Run the whole openni_launch processing chain -->
+    <include file="$(find strandsbag)/launch/processing.launch">
+	    <arg name="camera" value="head_xtion"/>
+	</include>
+	
 </launch>
