@@ -25,10 +25,10 @@ int main(int argc, char** argv)
     n.getParam("/image_player_node/camera_topic", camera_topic);
     
 	ros::Publisher depth_pub = n.advertise<sensor_msgs::Image>(camera_topic + "/depth/image_raw", 10);
-	ros::Publisher rgb_pub = n.advertise<sensor_msgs::Image>(camera_topic + "/rgb/image_color", 10);
+	ros::Publisher rgb_pub = n.advertise<sensor_msgs::Image>(camera_topic + "/rgb/image_raw", 10);
     ros::Duration(0.18f).sleep();
     // the magic happens in the folder_player
-    folder_player player(n, depth_pub, rgb_pub, bag_folder);
+    folder_player player(n, depth_pub, rgb_pub, bag_folder, camera_topic);
     ros::spin();
 	
 	return 0;
