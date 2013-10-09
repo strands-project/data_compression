@@ -10,7 +10,10 @@ bool comparator(const std::pair<std::string, double>& a, const std::pair<std::st
     return a.second < b.second; // compare timestamps
 }
 
-folder_player::folder_player(ros::NodeHandle& n, ros::Publisher& depth_pub, ros::Publisher& rgb_pub, const std::string& dirname) : n(n), depth_pub(depth_pub), rgb_pub(rgb_pub), dirname(dirname), temp_depth(480, 640, CV_16UC1), temp_rgb(480, 640, CV_8UC3)
+folder_player::folder_player(ros::NodeHandle& n, ros::Publisher& depth_pub,
+    ros::Publisher& rgb_pub, const std::string& dirname, const std::string& camera) :
+    n(n), depth_pub(depth_pub), rgb_pub(rgb_pub), dirname(dirname),
+    temp_depth(480, 640, CV_16UC1), temp_rgb(480, 640, CV_8UC3), camera(camera)
 {
     DIR* dir = opendir(dirname.c_str()); // open bag folder
     if (dir == NULL) {
@@ -94,6 +97,10 @@ ros::Time folder_player::read_depth()
 {
     std::string depth_path = dirname + "/" + depth_names.front() + ".tiff";
     temp_depth = cv::imread(depth_path, -1);
+    if (temp_depth.empty()) { // the last files may not have been compressed, and hence still png
+        depth_path = dirname + "/" + depth_names.front() + ".png";
+        temp_depth = cv::imread(depth_path, -1);
+    }
     
     std_msgs::Header header_depth;
     header_depth.stamp = ros::Time(depth_secs.front(), depth_nsecs.front());
@@ -105,7 +112,7 @@ ros::Time folder_player::read_depth()
     //std::cout << "ROS time: " << ros::Time::now() << std::endl;
     //std::cout << "Depth time: " << header_depth.stamp << std::endl;
     
-    header_depth.frame_id = "/camera_depth_frame"; // should probably be a parameter
+    header_depth.frame_id = std::string("/") + camera + "_depth_optical_frame"; // should probably be a parameter
     
     image_depth = cv_bridge::CvImage(header_depth, "16UC1", temp_depth);
     
@@ -127,9 +134,9 @@ ros::Time folder_player::read_rgb()
     
     //std::cout << "RGB time: " << header_rgb.stamp << std::endl;
     
-    header_rgb.frame_id = "/camera_rgb_frame"; // should probably be a parameter
+    header_rgb.frame_id = std::string("/") + camera + "_rgb_optical_frame"; // should probably be a parameter
     
-    image_rgb = cv_bridge::CvImage(header_rgb, "8UC3", temp_rgb);
+    image_rgb = cv_bridge::CvImage(header_rgb, "bgr8", temp_rgb);
     
     return header_rgb.stamp;
 }
