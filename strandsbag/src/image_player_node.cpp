@@ -16,6 +16,12 @@ int main(int argc, char** argv)
     std::string bag_folder;
     n.getParam("/image_player_node/bag_folder", bag_folder);
     
+    // if we're only to play one folder
+    std::string sub_folder;
+    if (n.hasParam("/image_player_node/sub_folder")) {
+        n.getParam("/image_player_node/sub_folder", sub_folder);
+    }
+    
     // topic of the depth and rgb images
     if (!n.hasParam("/image_player_node/camera_topic")) {
         ROS_ERROR("Could not find parameter camera_topic.");
@@ -28,7 +34,7 @@ int main(int argc, char** argv)
 	ros::Publisher rgb_pub = n.advertise<sensor_msgs::Image>(camera_topic + "/rgb/image_raw", 10);
     ros::Duration(0.18f).sleep();
     // the magic happens in the folder_player
-    folder_player player(n, depth_pub, rgb_pub, bag_folder, camera_topic);
+    folder_player player(n, depth_pub, rgb_pub, bag_folder, camera_topic, sub_folder);
     ros::spin();
 	
 	return 0;

@@ -4,7 +4,7 @@ project(openni_saver)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp cv_bridge std_msgs message_filters message_generation)
+find_package(catkin REQUIRED COMPONENTS roscpp cv_bridge std_msgs message_filters message_generation image_transport)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)

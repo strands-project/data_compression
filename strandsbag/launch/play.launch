@@ -6,6 +6,7 @@
     
     <!-- The folder where we find the rosbag and the compressed videos -->
     <arg name="bag_folder"/>
+    <arg name="sub_folder" default=""/>
     
     <!-- Option to suppress output -->
     <arg name="q" default="false"/>
@@ -38,6 +39,7 @@
     <!-- Launch the node streaming the images from a folder -->
 	<node pkg="strandsbag" type="image_player_node" name="image_player_node" output="screen">
 	    <param name="bag_folder" value="$(arg bag_folder)"/>
+	    <param name="sub_folder" value="$(arg sub_folder)"/>
 	    <param name="camera_topic" value="head_xtion"/>
     </node>
     

@@ -4,6 +4,9 @@
 #include <sensor_msgs/Image.h>
 #include "openni_image_saver.h"
 #include "libav_compressor/CompressionService.h"
+#include <image_transport/subscriber_filter.h>
+
+#define USE_IMAGE_TRANSPORT_SUBSCRIBER_FILTER 0
 
 int main(int argc, char** argv)
 {
@@ -37,8 +40,15 @@ int main(int argc, char** argv)
     ros::ServiceClient client = n.serviceClient<libav_compressor::CompressionService>("compression_service");
     openni_image_saver saver(client, video_length, bag_folder);
 
+    #if USE_IMAGE_TRANSPORT_SUBSCRIBER_FILTER
+    image_transport::ImageTransport it(n);
+    image_transport::SubscriberFilter depth_sub(it, camera_topic + "/depth/image_raw", 1);
+    image_transport::SubscriberFilter rgb_sub(it, camera_topic + "/rgb/image_color", 1);
+    #else
     message_filters::Subscriber<sensor_msgs::Image> depth_sub(n, camera_topic + "/depth/image_raw", 1);
     message_filters::Subscriber<sensor_msgs::Image> rgb_sub(n, camera_topic + "/rgb/image_color", 1);
+    #endif
+    
     // synch the depth and rgb images by using a message filter
     typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image> MySyncPolicy;
     message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), depth_sub, rgb_sub);
