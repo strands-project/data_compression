@@ -41,7 +41,8 @@ private:
 public:
     void publish_depth(const ros::TimerEvent& e); // Publishes the new depth image
     void publish_rgb(const ros::TimerEvent& e); // Publishes new rgb image
-    folder_player(ros::NodeHandle& n, ros::Publisher& depth_pub, ros::Publisher& rgb_pub, const std::string& dirname, const std::string& camera);
+    folder_player(ros::NodeHandle& n, ros::Publisher& depth_pub, ros::Publisher& rgb_pub,
+                  const std::string& dirname, const std::string& camera, const std::string& sub_folder);
 };
 
 #endif

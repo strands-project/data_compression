@@ -10,42 +10,47 @@ bool comparator(const std::pair<std::string, double>& a, const std::pair<std::st
     return a.second < b.second; // compare timestamps
 }
 
-folder_player::folder_player(ros::NodeHandle& n, ros::Publisher& depth_pub,
-    ros::Publisher& rgb_pub, const std::string& dirname, const std::string& camera) :
+folder_player::folder_player(ros::NodeHandle& n, ros::Publisher& depth_pub, ros::Publisher& rgb_pub,
+    const std::string& dirname, const std::string& camera, const std::string& sub_folder) :
     n(n), depth_pub(depth_pub), rgb_pub(rgb_pub), dirname(dirname),
     temp_depth(480, 640, CV_16UC1), temp_rgb(480, 640, CV_8UC3), camera(camera)
 {
-    DIR* dir = opendir(dirname.c_str()); // open bag folder
-    if (dir == NULL) {
-        ROS_ERROR("Can not read bag folder.");
-    }
-    std::string p = "."; // we don't want this
-    std::string pp = ".."; // or this
-    std::string line;
-    double sec;
-    double nsec;
-    std::ifstream timestamps;
-    struct dirent* ent;
     // get the first timestamp of every video and sort them
-    while ((ent = readdir(dir)) != NULL) {
-        std::string d = ent->d_name;
-        if (ent->d_type == DT_DIR && d != p && d != pp) {
-            std::string t = dirname + "/" + d + "/time.txt";
-            timestamps.open(t.c_str()); // except
-            if (!std::getline(timestamps, line)) {
-                timestamps.close();
-                continue;
-            }
-            timestamps.close();
-            sec = double(atoi(line.substr(10, 10).c_str())); // first seconds timestamp
-            nsec = double(atoi(line.substr(21, 10).c_str())); // first nanosec timestamp
-            dirs.push_back(std::pair<std::string, double>(d, sec+1e-9f*nsec));
+    if (sub_folder.empty()) {
+        DIR* dir = opendir(dirname.c_str()); // open bag folder
+        if (dir == NULL) {
+            ROS_ERROR("Can not read bag folder.");
         }
+        std::string p = "."; // we don't want this
+        std::string pp = ".."; // or this
+        std::string line;
+        double sec;
+        double nsec;
+        std::ifstream timestamps;
+        struct dirent* ent;
+        while ((ent = readdir(dir)) != NULL) {
+            std::string d = ent->d_name;
+            if (ent->d_type == DT_DIR && d != p && d != pp) {
+                std::string t = dirname + "/" + d + "/time.txt";
+                timestamps.open(t.c_str()); // except
+                if (!std::getline(timestamps, line)) {
+                    timestamps.close();
+                    continue;
+                }
+                timestamps.close();
+                sec = double(atoi(line.substr(10, 10).c_str())); // first seconds timestamp
+                nsec = double(atoi(line.substr(21, 10).c_str())); // first nanosec timestamp
+                dirs.push_back(std::pair<std::string, double>(d, sec+1e-9f*nsec));
+            }
+        }
+        closedir(dir);
+        std::sort(dirs.begin(), dirs.end(), &comparator); // sort folders by first timestamp
     }
-    closedir(dir);
-    std::sort(dirs.begin(), dirs.end(), &comparator); // sort folders by first timestamp
-    dir_nbr = 0;
+    else { // if supplied folder to play, just play that one
+        dirs.push_back(std::pair<std::string, double>(sub_folder, 0.0f));
+    }
     
+    dir_nbr = 0;
     shutting_down = false;
     read_new_dir(); // read first folder
     // read first files and set timers for publishing
