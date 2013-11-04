@@ -19,9 +19,9 @@
     
     <!-- Record a rosbag, use regular expressions to exclude images -->
     <!--
-    <node pkg="rosbag" type="record" name="recorder" output="screen" args="-a -x &quot;/(head_xtion)/(.*)/(?!camera_info|parameter_descriptions|parameter_updates)(\w+).&quot; $(arg quiet) $(arg bz2) -O $(arg bag_folder)/bag"/>
+    <node pkg="rosbag" type="record" name="recorder" output="screen" args="-a -x &quot;/(head_xtion|chest_xtion)/(.*)/(?!camera_info|parameter_descriptions|parameter_updates)(\w+).&quot; $(arg quiet) $(arg bz2) -O $(arg bag_folder)/bag"/>
     -->
-    <node pkg="rosbag" type="record" name="recorder" output="screen" args="-a -x &quot;/(head_xtion)/(?!depth\/camera_info|rgb\/camera_info).*&quot; $(arg quiet) $(arg bz2) -O $(arg bag_folder)/bag"/>
+    <node pkg="rosbag" type="record" name="recorder" output="screen" args="-a -x &quot;/(head_xtion|chest_xtion)/(?!depth\/camera_info|rgb\/camera_info).*&quot; $(arg quiet) $(arg bz2) -O $(arg bag_folder)/bag"/>
     
     <!-- Save the images published by openni_launch -->
 	<include file="$(find libav_compressor)/launch/video_saver.launch">
