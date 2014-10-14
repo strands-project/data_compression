@@ -6,16 +6,16 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/Modules/
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS genmsg dynamic_reconfigure image_transport)
+find_package(catkin REQUIRED COMPONENTS genmsg dynamic_reconfigure image_transport catkinized_libav)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 find_package(Boost REQUIRED COMPONENTS system date_time thread)
-find_package(LibAV REQUIRED COMPONENTS avcodec avutil swscale)
+#find_package(LibAV REQUIRED COMPONENTS avcodec avutil swscale)
 
-if(${LIBAV_VERSION_MAJOR} LESS 9)
-  set(BACKPORT_LIBAV ON)
-endif(${LIBAV_VERSION_MAJOR} LESS 9)
+#if(${LIBAV_VERSION_MAJOR} LESS 9)
+#  set(BACKPORT_LIBAV ON)
+#endif(${LIBAV_VERSION_MAJOR} LESS 9)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -81,7 +81,7 @@ generate_messages(
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS image_transport libav
+  CATKIN_DEPENDS image_transport catkinized_libav
   DEPENDS boost
 )
 
@@ -97,7 +97,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${LIBAV_INCLUDE_DIRS}
+#  ${LIBAV_INCLUDE_DIRS}
 )
 
 include_directories(SYSTEM
@@ -119,9 +119,9 @@ set(SOURCE_FILES
   src/manifest.cpp
 )
 
-if(BACKPORT_LIBAV)
-  set(SOURCE_FILES src/libav_backport.cpp ${SOURCE_FILES})
-endif(BACKPORT_LIBAV)
+#if(BACKPORT_LIBAV)
+#  set(SOURCE_FILES src/libav_backport.cpp ${SOURCE_FILES})
+#endif(BACKPORT_LIBAV)
 
 add_library(${PROJECT_NAME} ${SOURCE_FILES})
 
@@ -131,7 +131,7 @@ add_library(${PROJECT_NAME} ${SOURCE_FILES})
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(libav_image_transport_node libav_image_transport_generate_messages_cpp)
-add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg libav)
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(libav_image_transport_node
@@ -142,7 +142,7 @@ add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg l
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
-  ${LIBAV_LIBRARIES}
+#  ${LIBAV_LIBRARIES}
 )
 
 class_loader_hide_library_symbols(${PROJECT_NAME})
