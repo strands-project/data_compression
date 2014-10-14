@@ -29,6 +29,8 @@
   <!-- Dependencies can be catkin packages or system dependencies -->
   <!-- Examples: -->
   <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>yasm</build_depend>
+  <build_depend>libx264-dev</build_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
