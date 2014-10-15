@@ -209,6 +209,9 @@ void Decoder::decode(const Packet::ConstPtr &packet,
 		throw std::runtime_error(
 				"Can not handle requested output pixel format.");
 
+	if (image->encoding == "mono16") {
+		image->encoding = "16UC1"; // needed by the openni stack
+	}
 	size = frame_out->linesize[0] * frame_out->height;
 	image->data.resize(size);
 	image->data.assign(frame_out->data[0], frame_out->data[0] + size);
