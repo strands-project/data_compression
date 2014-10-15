@@ -2,6 +2,7 @@
 int16   pix_fmt
 uint16  width
 uint16  height
+string  frame_id
 
 # Description of the compressed image
 bool    keyframe

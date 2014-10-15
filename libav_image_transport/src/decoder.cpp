@@ -197,10 +197,10 @@ void Decoder::decode(const Packet::ConstPtr &packet,
 	image->header.stamp = ros::Time(
 			static_cast<uint32_t>(frame_in->pkt_pts >> 32),
 			static_cast<uint32_t>(frame_in->pkt_pts));
-	image->header.frame_id = "/head_xtion_depth_optical_frame";
 
 	/* Store image */
 	image->header.seq = packet->seq;
+	image->header.frame_id = packet->frame_id;
 	image->width = frame_out->width;
 	image->height = frame_out->height;
 	image->step = avpicture_get_size(codec_context_->pix_fmt, frame_out->width, frame_out->height)/frame_out->height;
