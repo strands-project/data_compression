@@ -197,12 +197,13 @@ void Decoder::decode(const Packet::ConstPtr &packet,
 	image->header.stamp = ros::Time(
 			static_cast<uint32_t>(frame_in->pkt_pts >> 32),
 			static_cast<uint32_t>(frame_in->pkt_pts));
+	image->header.frame_id = "/head_xtion_depth_optical_frame";
 
 	/* Store image */
 	image->header.seq = packet->seq;
 	image->width = frame_out->width;
 	image->height = frame_out->height;
-	image->step = frame_out->linesize[0];
+	image->step = avpicture_get_size(codec_context_->pix_fmt, frame_out->width, frame_out->height)/frame_out->height;
 
 	if (!pix_fmt_libav2ros(frame_out->format, image->encoding,
 			image->is_bigendian))
@@ -212,9 +213,14 @@ void Decoder::decode(const Packet::ConstPtr &packet,
 	if (image->encoding == "mono16") {
 		image->encoding = "16UC1"; // needed by the openni stack
 	}
-	size = frame_out->linesize[0] * frame_out->height;
+	
+	size = image->step*image->height;
 	image->data.resize(size);
-	image->data.assign(frame_out->data[0], frame_out->data[0] + size);
+	uint8_t* row_start;
+	for (size_t i = 0; i < image->height; ++i) {
+		row_start = frame_out->data[0] + i*frame_out->linesize[0];
+		std::copy(row_start, row_start + image->step, image->data.begin() + i*image->step);
+	}
 }
 
 } /* namespace libav_image_transport */
