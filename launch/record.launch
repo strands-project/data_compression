@@ -1,0 +1,36 @@
+<launch>
+    <!-- We need to set use_sim_time because it might be set to true when playing -->
+    <rosparam>
+        use_sim_time : false
+    </rosparam>
+    
+    <!-- Camera namespace to save -->
+    <arg name="camera" default="head_xtion"/>
+    
+    <!-- Topics for compressed depth and rgb -->
+    <arg name="compressed_depth" default="/compressed_depth"/>
+    <arg name="compressed_rgb" default="/compressed_rgb"/>
+    
+    <!-- The folder where the rosbag is stored together with the videos -->
+    <arg name="file"/>
+    
+    <!--
+    <node pkg="image_transport" type="republish" name="depth_compressor" output="screen" args="raw libav">
+	    <param name="in" type="str" value="/$(arg camera)/depth/image_raw"/>
+	    <param name="out" type="str" value="$(arg compressed_depth)"/>
+    </node>
+    -->
+    <node pkg="image_transport" type="republish" name="depth_compressor" output="screen" args="raw in:=/$(arg camera)/depth/image_raw libav out:=$(arg compressed_depth)"/>
+    
+    <!--
+    <node pkg="image_transport" type="republish" name="rgb_compressor" output="screen" args="raw theora">
+	    <param name="in" type="str" value="/$(arg camera)/rgb/image_raw"/>
+	    <param name="out" type="str" value="$(arg compressed_rgb)"/>
+    </node>
+    -->
+    <node pkg="image_transport" type="republish" name="rgb_compressor" output="screen" args="raw in:=/$(arg camera)/rgb/image_raw theora out:=$(arg compressed_rgb)"/>
+    
+    <!-- Record a rosbag, use regular expressions to exclude images -->
+    <node pkg="rosbag" type="record" name="recorder" output="screen" args="-a -x &quot;/(head_xtion|chest_xtion)/(?!depth\/camera_info|rgb\/camera_info).*&quot; -O $(arg file)"/>
+    
+</launch>
