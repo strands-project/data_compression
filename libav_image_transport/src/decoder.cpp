@@ -200,7 +200,7 @@ void Decoder::decode(const Packet::ConstPtr &packet,
 
 	/* Store image */
 	image->header.seq = packet->seq;
-	image->header.frame_id = packet->frame_id;
+	image->header = packet->header;
 	image->width = frame_out->width;
 	image->height = frame_out->height;
 	image->step = avpicture_get_size(codec_context_->pix_fmt, frame_out->width, frame_out->height)/frame_out->height;

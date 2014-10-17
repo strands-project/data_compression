@@ -217,7 +217,7 @@ void Encoder::encode(const sensor_msgs::Image& image, Packet &packet,
 	packet.compressed_pix_fmt = pix_fmt_out_;
 	packet.compressed_width = codec_context_->width;
 	packet.compressed_height = codec_context_->height;
-	packet.frame_id = image.header.frame_id;
+	packet.header = image.header;
 
 #ifdef BACKPORT_LIBAV
 	packet.pts = codec_context_->coded_frame->pts;
