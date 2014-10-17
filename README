@@ -1,0 +1,14 @@
+Installation
+============
+
+1) Install Dependencies
+
+    libav:
+        sudo apt-get install yasm libx264-dev
+
+    libav_image_transport:
+        sudo apt-get install ros-groovy-dynamic-reconfigure ros-groovy-image-transport
+
+2) Make packages
+
+    catkin_make_isolated
