@@ -32,6 +32,7 @@
   <run_depend>rosbag</run_depend>
   <run_depend>libav_image_transport</run_depend>
   <run_depend>image_transport_plugins</run_depend>
+  <run_depend>openni_wrapper</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
