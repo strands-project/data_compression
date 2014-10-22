@@ -1,0 +1,13 @@
+<library path="lib/liblibav_image_transport">
+  <class name="image_transport/libav_pub" type="libav_image_transport::LibAVImagePublisher" base_class_type="image_transport::PublisherPlugin">
+    <description>
+      This plugin publishes compressed images using libav for compression.
+    </description>
+  </class>
+
+  <class name="image_transport/libav_sub" type="libav_image_transport::LibAVImageSubscriber" base_class_type="image_transport::SubscriberPlugin">
+    <description>
+      This plugin decompresses compressed images using libav.
+    </description>
+  </class>
+</library>

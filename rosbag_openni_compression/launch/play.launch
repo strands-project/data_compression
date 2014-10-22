@@ -1,0 +1,54 @@
+<launch>
+
+    <!-- We need to set use_sim_time because the clock arg doesn't do so -->
+    <rosparam>
+        use_sim_time : true
+    </rosparam>
+    
+    <arg name="manager" default="manager"/>
+    <arg name="machine" default="localhost"/>
+    <arg name="user"   	default=""/>
+    
+    <machine name="$(arg machine)" address="$(arg machine)" env-loader="/opt/strands/strands_catkin_ws/devel/env.sh" user="$(arg user)"/>
+    
+    <!-- Camera namespace to save -->
+    <arg name="camera" default="head_xtion"/>
+    
+    <!-- Topics for compressed depth and rgb -->
+    <arg name="compressed_depth" default="/compressed_depth"/>
+    <arg name="compressed_rgb" default="/compressed_rgb"/>
+    
+    <!-- The folder where the rosbag is stored together with the videos -->
+    <arg name="file"/>
+    
+    <!--
+    <node pkg="image_transport" type="republish" name="depth_decompressor" output="screen" args="libav raw">
+	    <param name="in" type="str" value="$(arg compressed_depth)"/>
+	    <param name="out" type="str" value="/$(arg camera)/depth/image_raw"/>
+    </node>
+    -->
+    <node pkg="image_transport" type="republish" name="depth_decompressor" output="screen" args="libav in:=$(arg compressed_depth) raw out:=/$(arg camera)/depth/image_raw"/>
+    
+    <!--
+    <node pkg="image_transport" type="republish" name="rgb_decompressor" output="screen" args="theora raw">
+	    <param name="in" type="str" value="$(arg compressed_rgb)"/>
+	    <param name="out" type="str" value="/$(arg camera)/rgb/image_raw"/>
+    </node>
+    -->
+    <node pkg="image_transport" type="republish" name="rgb_decompressor" output="screen" args="theora in:=$(arg compressed_rgb) raw out:=/$(arg camera)/rgb/image_raw"/>
+    
+    <!-- Launch the rosbag -->
+    <node pkg="rosbag" type="play" name="player" output="screen" args="$(arg file) --clock"/>
+    
+    <!-- Run the whole openni_launch processing chain -->
+    <include file="$(find openni_wrapper)/launch/processing.launch">
+        <arg name="camera" value="$(arg camera)"/>
+        <arg name="manager" value="$(arg manager)_$(arg camera)"/>
+        <arg name="rgb" value="$(arg camera)/rgb/image_raw"/>
+        <arg name="depth" value="$(arg camera)/depth/image_raw"/>
+        <arg name="rgb_camera_info" value="$(arg camera)/rgb/camera_info"/>
+        <arg name="depth_camera_info" value="$(arg camera)/depth/camera_info"/>
+        <arg name="machine" value="$(arg machine)"/>
+    </include>
+	
+</launch>

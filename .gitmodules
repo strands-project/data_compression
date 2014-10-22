@@ -1,0 +1,3 @@
+[submodule "catkinized_libav/libav_trunk"]
+	path = catkinized_libav/libav_trunk
+	url = https://github.com/libav/libav.git
