@@ -27,16 +27,38 @@ ExternalProject_Add(libav_trunk
 )
 
 add_library(libav_wrap src/wrap_lib.cc)
-SET(LIBAV_LIBRARY_DEST ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_LIB_DESTINATION})
-target_link_libraries(libav_wrap ${LIBAV_LIBRARY_DEST}/libavcodec.so ${LIBAV_LIBRARY_DEST}/libavdevice.so ${LIBAV_LIBRARY_DEST}/libavfilter.so ${LIBAV_LIBRARY_DEST}/libavformat.so ${LIBAV_LIBRARY_DEST}/libavresample.so ${LIBAV_LIBRARY_DEST}/libavutil.so ${LIBAV_LIBRARY_DEST}/libswscale.so)
+SET(LIBAV_LIBRARY_DEST ${CATKIN_DEVEL_PREFIX}/lib)
+SET(LIBAV_INCLUDE_DEST ${CATKIN_DEVEL_PREFIX}/include)
+
+SET(LIBAV_LIBS ${LIBAV_LIBRARY_DEST}/libavcodec.so
+  ${LIBAV_LIBRARY_DEST}/libavdevice.so ${LIBAV_LIBRARY_DEST}/libavfilter.so
+  ${LIBAV_LIBRARY_DEST}/libavformat.so ${LIBAV_LIBRARY_DEST}/libavresample.so
+  ${LIBAV_LIBRARY_DEST}/libavutil.so ${LIBAV_LIBRARY_DEST}/libswscale.so
+)
+
+SET(LIBAV_INCLUDE_DIRS ${LIBAV_INCLUDE_DEST}/libavcodec
+  ${LIBAV_INCLUDE_DEST}/libavdevice ${LIBAV_INCLUDE_DEST}/libavfilter
+  ${LIBAV_INCLUDE_DEST}/libavformat ${LIBAV_INCLUDE_DEST}/libavresample
+  ${LIBAV_INCLUDE_DEST}/libavutil ${LIBAV_INCLUDE_DEST}/libswscale
+)
+
+set (LIBS_DEREF "")
+foreach (_file ${LIBAV_LIBS})
+    get_filename_component(_resolvedFile "${_file}" REALPATH)
+    list (APPEND LIBS_DEREF "${_resolvedFile}")
+endforeach()
+
+target_link_libraries(libav_wrap ${LIBAV_LIBS})
 add_dependencies(libav_wrap libav_trunk)
- 
-install(DIRECTORY include
-DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+
+install(TARGETS libav_wrap
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
-install(DIRECTORY lib
-DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
+
+install(DIRECTORY ${LIBAV_INCLUDE_DIRS}
+  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
 )
-install(DIRECTORY share
-DESTINATION ${CATKIN_GLOBAL_SHARE_DESTINATION}
+
+install(FILES ${LIBS_DEREF}
+  DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
 )
