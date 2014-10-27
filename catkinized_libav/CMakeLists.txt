@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.8.3)
 project(catkinized_libav)
  
 set(CMAKE_BUILD_TYPE Release)
-#set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
  
 find_package(catkin REQUIRED)
  
@@ -32,12 +31,6 @@ set(LIBAV_COMPONENTS avcodec avdevice avfilter avformat avresample avutil swscal
 set (LIBAV_LIBS "")
 set (LIBAV_INCLUDE_DIRS "")
 foreach (_name ${LIBAV_COMPONENTS})
-    #find_library(_library_file
-    #  NAMES ${_name}
-    #  PATHS ${LIBAV_LIBRARY_DEST}
-    #  NO_DEFAULT_PATH
-    #)
-    #list (APPEND LIBAV_LIBS "${_library_file}")
     list (APPEND LIBAV_LIBS "${LIBAV_LIBRARY_DEST}/lib${_name}.so")
     list (APPEND LIBAV_INCLUDE_DIRS "${LIBAV_INCLUDE_DEST}/lib${_name}")
 endforeach()
@@ -53,11 +46,6 @@ install(TARGETS libav_wrap
 install(DIRECTORY ${LIBAV_INCLUDE_DIRS}
   DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
 )
-
-#install(DIRECTORY ${LIBAV_LIBRARY_DEST}/.
-#  DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
-#  EXPORT_LINK_INTERFACE_LIBRARIES
-#)
 
 foreach (_name ${LIBAV_COMPONENTS})
   install(DIRECTORY ${LIBAV_LIBRARY_DEST}/.
