@@ -19,7 +19,7 @@ LIBRARIES libav_wrap
 ExternalProject_Add(libav_trunk
   DOWNLOAD_COMMAND ""
   SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libav_trunk"
-  CONFIGURE_COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/libav_trunk/configure" --enable-shared --enable-libx264 --enable-gpl --prefix="${CATKIN_DEVEL_PREFIX}"
+  CONFIGURE_COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/libav_trunk/configure" --enable-shared --enable-gpl --prefix="${CATKIN_DEVEL_PREFIX}"#--enable-libx264 
 )
 
 add_library(libav_wrap src/wrap_lib.cc)
