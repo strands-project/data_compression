@@ -4,7 +4,7 @@
   <version>0.1.0</version>
   <description>Image transport plugin using libav to compress images.</description>
 
-  <maintainer email="dominique.hunziker@gmail.com">Dominique Hunziker</maintainer>
+  <maintainer email="nbore@kth.se">Nils Bore</maintainer>
   <author email="dominique.hunziker@gmail.com">Dominique Hunziker</author>
   <url type="website">https://github.com/dominiquehunziker/libav_image_transport</url>
 
