@@ -2,8 +2,8 @@
 Changelog for package catkinized_libav
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.1 (2014-11-14)
+------------------
 * Merge commit 'e3b1bba6165b7e6e75b9ae3b4c58ffb9a94324e0' as 'catkinized_libav/libav_trunk'
 * Removed libav submodule
 * Corrected maintainer's in packages

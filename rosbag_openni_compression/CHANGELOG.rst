@@ -2,8 +2,8 @@
 Changelog for package rosbag_openni_compression
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.1 (2014-11-14)
+------------------
 * Corrected maintainer's in packages
 * Added openni_wrapper as a run depend since the playback depends on that
 * Put the rosbag_openni_compression into its own folder
