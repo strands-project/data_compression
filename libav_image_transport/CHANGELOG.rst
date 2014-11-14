@@ -1,0 +1,36 @@
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package libav_image_transport
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Forthcoming
+-----------
+* Update package.xml
+* Corrected maintainer's in packages
+* Added install targets for catkinized_libav
+* Moved the README into correct package
+* Now just using the original headers because why not
+* Added the frame_id in the message of the encoded frame Package msg so we can use multiple cameras
+* Removed padding to the right of the image and hacked the depth frame in the header for now, everything working
+* Got the depth_registered cloud running at least
+* Changed the dynamic config files to have depth image compression with ffv1 as default
+* Removed the libav cmake module as it's not needed with the catkinized version
+* Made the package depend on catkinized_libav instead of the normal library
+* add missing dependency
+* fix pixel formats
+* add dynamic reconfigure server on subscriber side
+* fix cmake include
+* fix pts implementation
+* add compile flag
+* fix error with key_frame flag
+* fix errors occurring in destructors
+* change dependency classification
+* fix timestamp implementation
+* fix bug with packet
+* leave the seach paths to cmake
+* change dependency
+* fix bug with backport
+* fix problem with new version format of libav
+* add install directives
+* Update libav_plugins.xml
+* initial commit
+* Contributors: Dominique Hunziker, Marc Hanheide, Nils Bore, dominiquehunziker
