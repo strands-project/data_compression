@@ -5,15 +5,6 @@ Video encoding for OpenNI topics to record them to a rosbag and replay through r
 
 Includes libav_image_transport by Dominique Hunziker: https://github.com/rapyuta/libav_image_transport.
 
-## Compiling
-
-Before doing `catkin_make` on the containing workspace, you need to fetch the submodules one time
-
-* `git submodule init`
-* `git submodule update`
-
-within the git repository.
-
 ## Compression comparison
 
 To put the compression gains of this library in context, here is a comparison to the default ROS image compression and the uncompressed images.
