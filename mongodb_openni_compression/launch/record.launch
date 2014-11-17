@@ -6,8 +6,8 @@
     <arg name="with_rgb" default="true"/>
     
     <!-- Topics for compressed depth and rgb -->
-    <arg name="compressed_depth" default="/compressed_depth2"/>
-    <arg name="compressed_rgb" default="/compressed_rgb2"/>
+    <arg name="compressed_depth" default="/compressed_depth"/>
+    <arg name="compressed_rgb" default="/compressed_rgb"/>
     
     <node pkg="image_transport" type="republish" name="$(arg camera)_depth_compressor" output="screen" args="raw in:=/$(arg camera)/depth/image_raw libav out:=$(arg compressed_depth)" if="$(arg with_depth)"/>
     <node pkg="image_transport" type="republish" name="$(arg camera)_rgb_compressor" output="screen" args="raw in:=/$(arg camera)/rgb/image_raw theora out:=$(arg compressed_rgb)" if="$(arg with_rgb)"/>
@@ -17,5 +17,8 @@
     <arg name="rgb_logger" value="mongodb_$(arg camera)_rgb_logger"/>
     <node pkg="mongodb_log" type="mongodb_log.py" name="$(arg rgb_logger)" args="--nodename-prefix=$(arg rgb_logger) $(arg compressed_rgb)/theora" output="screen" if="$(arg with_depth)"/>
     <node pkg="mongodb_log" type="mongodb_log.py" name="$(arg depth_logger)" args="--nodename-prefix=$(arg depth_logger) $(arg compressed_depth)/libav" output="screen" if="$(arg with_rgb)"/>
+    
+    <!-- For recording camera_info also, does not work atm -->
+
     
 </launch>
