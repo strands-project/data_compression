@@ -25,6 +25,10 @@ catkin_package(
 # DEPENDS system_lib
 )
 
-install(DIRECTORY launch/
+install(DIRECTORY launch
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
+catkin_install_python(PROGRAMS scripts/record_server.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
