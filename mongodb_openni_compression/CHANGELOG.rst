@@ -2,8 +2,8 @@
 Changelog for package mongodb_openni_compression
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2014-11-18)
+------------------
 * made all version numbers the same across the repo
 * Added a launch file for launching everything together
 * Added roslaunch axserver as run depend
