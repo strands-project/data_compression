@@ -14,7 +14,7 @@ class RoslaunchServer(object):
 
     def __init__(self, name):
         self._action_name = name
-        self.roslaunch_axclient = actionlib.SimpleActionClient('/launchServer', launchAction)
+        self.roslaunch_axclient = actionlib.SimpleActionClient('/record_roslaunch_axserver', launchAction)
         rospy.loginfo("Waiting for roslaunch action...") 
         self.roslaunch_axclient.wait_for_server()
         rospy.loginfo("Done") 
@@ -32,10 +32,10 @@ class RoslaunchServer(object):
         goal = launchGoal()
         goal.pkg = "mongodb_openni_compression"
         goal.launch_file = "record.launch camera:=" + mygoal.camera
-        if mygoal.with_depth:
-            goal.launch_file = goal.launch_file + " with_depth:=true"
-        if mygoal.with_rgb:
-            goal.launch_file = goal.launch_file + " with_rgb:=true"
+        if not mygoal.with_depth:
+            goal.launch_file = goal.launch_file + " with_depth:=false"
+        if not mygoal.with_rgb:
+            goal.launch_file = goal.launch_file + " with_rgb:=false"
         print goal.pkg + " " + goal.launch_file
         self.roslaunch_axclient.send_goal(goal)
         #while (gh.get_goal_status().status == actionlib.GoalStatus.ACTIVE
