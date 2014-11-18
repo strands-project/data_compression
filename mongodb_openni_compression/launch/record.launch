@@ -6,8 +6,8 @@
     <arg name="with_rgb" default="true"/>
     
     <!-- Topics for compressed depth and rgb -->
-    <arg name="compressed_depth" default="/compressed_depth"/>
-    <arg name="compressed_rgb" default="/compressed_rgb"/>
+    <arg name="compressed_depth" default="/$(arg camera)_compressed_depth"/>
+    <arg name="compressed_rgb" default="/$(arg camera)_compressed_rgb"/>
     
     <node pkg="image_transport" type="republish" name="$(arg camera)_depth_compressor" output="screen" args="raw in:=/$(arg camera)/depth/image_raw libav out:=$(arg compressed_depth)" if="$(arg with_depth)"/>
     <node pkg="image_transport" type="republish" name="$(arg camera)_rgb_compressor" output="screen" args="raw in:=/$(arg camera)/rgb/image_raw theora out:=$(arg compressed_rgb)" if="$(arg with_rgb)"/>
