@@ -1,0 +1,8 @@
+# the time to wait until
+string camera
+bool with_depth
+bool with_rgb
+---
+---
+# feedback message
+bool ready
