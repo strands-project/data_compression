@@ -2,8 +2,8 @@
 Changelog for package mongodb_openni_compression
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.3 (2014-11-19)
+------------------
 * Covered all the cases with the action server and changed the names of the recorded topics to include the camera name
 * Contributors: Nils Bore
 
