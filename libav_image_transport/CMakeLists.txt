@@ -144,6 +144,17 @@ target_link_libraries(${PROJECT_NAME}
   ${Boost_LIBRARIES}
 )
 
+# This might be needed to link the libraries correctly when compiled for apt-get
+# ------------------------------------------------------
+set(LIBAV_LIBRARY_DEST ${CATKIN_DEVEL_PREFIX}/lib)
+set(LIBAV_COMPONENTS avcodec avdevice avfilter avformat avresample avutil swscale)
+set (LIBAV_LIBS "")
+foreach (_name ${LIBAV_COMPONENTS})
+    list (APPEND LIBAV_LIBS "${LIBAV_LIBRARY_DEST}/lib${_name}.so")
+endforeach()
+target_link_libraries(${PROJECT_NAME} ${LIBAV_LIBS})
+# ------------------------------------------------------
+
 #class_loader_hide_library_symbols(${PROJECT_NAME})
 
 #############
