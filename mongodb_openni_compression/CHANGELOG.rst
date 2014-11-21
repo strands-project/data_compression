@@ -2,6 +2,9 @@
 Changelog for package mongodb_openni_compression
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.5 (2014-11-21)
 ------------------
 

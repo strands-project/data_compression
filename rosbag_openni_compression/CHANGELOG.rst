@@ -2,6 +2,9 @@
 Changelog for package rosbag_openni_compression
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.5 (2014-11-21)
 ------------------
 
