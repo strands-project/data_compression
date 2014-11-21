@@ -2,8 +2,8 @@
 Changelog for package mongodb_openni_compression
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.4 (2014-11-21)
+------------------
 * Filled in the README
 * Added a README file
 * Changed the name of the server class
