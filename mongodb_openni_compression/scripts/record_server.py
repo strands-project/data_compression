@@ -10,7 +10,7 @@ from actionlib_msgs.msg import GoalStatus
 from mongodb_openni_compression.msg import RecordCameraAction, RecordCameraResult, RecordCameraFeedback
 from roslaunch_axserver.msg import launchAction, launchGoal, launchResult, launchFeedback
 
-class RoslaunchServer(object):
+class RecordServer(object):
 # create messages that are used to publish feedback/result
 
     def __init__(self, name):
@@ -60,5 +60,5 @@ class RoslaunchServer(object):
 
 if __name__ == '__main__':
     rospy.init_node('record_camera')
-    RoslaunchServer(rospy.get_name())
+    RecordServer(rospy.get_name())
     rospy.spin()
