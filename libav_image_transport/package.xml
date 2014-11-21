@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>libav_image_transport</name>
-  <version>0.0.4</version>
+  <version>0.0.5</version>
   <description>Image transport plugin using libav to compress images.</description>
 
   <maintainer email="nbore@kth.se">Nils Bore</maintainer>

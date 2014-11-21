@@ -2,8 +2,8 @@
 Changelog for package libav_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.5 (2014-11-21)
+------------------
 * Tried to link all the libraries explicitly instead
 * Contributors: Nils Bore
 
