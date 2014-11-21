@@ -144,7 +144,7 @@ target_link_libraries(${PROJECT_NAME}
   ${Boost_LIBRARIES}
 )
 
-class_loader_hide_library_symbols(${PROJECT_NAME})
+#class_loader_hide_library_symbols(${PROJECT_NAME})
 
 #############
 ## Install ##
