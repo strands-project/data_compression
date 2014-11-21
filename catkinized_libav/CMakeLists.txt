@@ -8,12 +8,13 @@ find_package(catkin REQUIRED)
 include(ExternalProject)
  
 set(VERSION 2.4.1)
- 
+
+set(LIBAV_COMPONENTS avcodec avdevice avfilter avformat avresample avutil swscale)
 catkin_package(
 #DEPENDS
 #CATKIN_DEPENDS
 #INCLUDE_DIRS include # libav is already in /devel/include
-LIBRARIES libav_wrap
+LIBRARIES libav_wrap ${LIBAV_COMPONENTS}
 )
 
 ExternalProject_Add(libav_trunk
@@ -25,8 +26,6 @@ ExternalProject_Add(libav_trunk
 add_library(libav_wrap src/wrap_lib.cc)
 set(LIBAV_LIBRARY_DEST ${CATKIN_DEVEL_PREFIX}/lib)
 set(LIBAV_INCLUDE_DEST ${CATKIN_DEVEL_PREFIX}/include)
-
-set(LIBAV_COMPONENTS avcodec avdevice avfilter avformat avresample avutil swscale)
 
 set (LIBAV_LIBS "")
 set (LIBAV_INCLUDE_DIRS "")
