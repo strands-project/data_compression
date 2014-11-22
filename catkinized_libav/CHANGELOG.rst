@@ -2,6 +2,11 @@
 Changelog for package catkinized_libav
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Got it working by adding the libraries as catkin package exports
+* Contributors: Nils Bore
+
 0.0.6 (2014-11-21)
 ------------------
 
