@@ -17,8 +17,8 @@
     <!-- Record a rosbag, use regular expressions to exclude images -->
     <arg name="depth_logger" value="mongodb_$(arg camera)_depth_logger"/>
     <arg name="rgb_logger" value="mongodb_$(arg camera)_rgb_logger"/>
-    <node pkg="mongodb_log" type="mongodb_log.py" name="$(arg rgb_logger)" args="--nodename-prefix=$(arg rgb_logger) $(arg compressed_rgb)/theora" output="screen" if="$(arg with_depth)"/>
-    <node pkg="mongodb_log" type="mongodb_log.py" name="$(arg depth_logger)" args="--nodename-prefix=$(arg depth_logger) $(arg compressed_depth)/libav" output="screen" if="$(arg with_rgb)"/>
+    <node pkg="mongodb_log" type="mongodb_log.py" name="$(arg rgb_logger)" args="--nodename-prefix=$(arg rgb_logger) $(arg compressed_rgb)/$(arg rgb_compression)" output="screen" if="$(arg with_depth)"/>
+    <node pkg="mongodb_log" type="mongodb_log.py" name="$(arg depth_logger)" args="--nodename-prefix=$(arg depth_logger) $(arg compressed_depth)/$(arg depth_compression)" output="screen" if="$(arg with_rgb)"/>
     
     <!-- For recording camera_info also, does not work atm -->
 
