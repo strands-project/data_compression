@@ -2,8 +2,8 @@
 Changelog for package mongodb_openni_compression
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.8 (2014-11-23)
+------------------
 * Changed the topic of the recorded streams as well
 * Added the option to change the compression type, switched default rgb to normal compressed
 * Contributors: Nils Bore
