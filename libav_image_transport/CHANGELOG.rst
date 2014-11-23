@@ -2,6 +2,9 @@
 Changelog for package libav_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.7 (2014-11-22)
 ------------------
 * Got it working by adding the libraries as catkin package exports
