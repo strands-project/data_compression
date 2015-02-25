@@ -131,6 +131,7 @@ add_library(${PROJECT_NAME} ${SOURCE_FILES})
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(libav_image_transport_node libav_image_transport_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME} catkinized_libav)
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 
 ## Specify libraries to link a library or executable target against
