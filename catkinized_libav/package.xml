@@ -30,8 +30,6 @@
   <!-- Examples: -->
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>yasm</build_depend>
-  <build_depend>libav-all-dev</build_depend>
-  <run_depend>libav-all-dev</run_depend>
   <!-- <build_depend>libx264-dev</build_depend> -->
 
   <!-- The export tag contains other, unspecified, tags -->
