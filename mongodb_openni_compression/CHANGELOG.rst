@@ -2,6 +2,12 @@
 Changelog for package mongodb_openni_compression
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fixed the mongodb_play.py call
+  The name of the RGB topic, under which it is stored in mongo, was wrong
+* Contributors: Vojtech Novak
+
 0.0.8 (2014-11-23)
 ------------------
 * Changed the topic of the recorded streams as well
