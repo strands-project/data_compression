@@ -14,7 +14,7 @@ catkin_package(
 #DEPENDS
 #CATKIN_DEPENDS
 #INCLUDE_DIRS include # libav is already in /devel/include
-LIBRARIES libav_wrap ${LIBAV_COMPONENTS}
+LIBRARIES libav_wrap #${LIBAV_COMPONENTS}
 )
 
 ExternalProject_Add(libav_trunk
