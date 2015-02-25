@@ -2,8 +2,8 @@
 Changelog for package catkinized_libav
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.9 (2015-02-25)
+------------------
 * removed the external libraries to be expected
 * Revert "added new rosdep key as dependency. See https://github.com/strands-project/rosdistro/pull/370"
   This reverts commit 411841657371e342cb03df879a4b5d247be43151.
