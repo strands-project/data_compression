@@ -14,7 +14,7 @@ catkin_package(
 #DEPENDS
 #CATKIN_DEPENDS
 #INCLUDE_DIRS include # libav is already in /devel/include
-LIBRARIES libav_wrap #${LIBAV_COMPONENTS}
+LIBRARIES libav_wrap ${LIBAV_COMPONENTS}
 )
 
 ExternalProject_Add(libav_trunk
@@ -30,12 +30,15 @@ set(LIBAV_INCLUDE_DEST ${CATKIN_DEVEL_PREFIX}/include)
 set (LIBAV_LIBS "")
 set (LIBAV_INCLUDE_DIRS "")
 foreach (_name ${LIBAV_COMPONENTS})
+    add_library(${_name} SHARED IMPORTED GLOBAL)
+    add_dependencies(${_name} libav_trunk)
+    set_property(TARGET ${_name} PROPERTY IMPORTED_LOCATION "${LIBAV_LIBRARY_DEST}/lib${_name}.so")
     list (APPEND LIBAV_LIBS "${LIBAV_LIBRARY_DEST}/lib${_name}.so")
     list (APPEND LIBAV_INCLUDE_DIRS "${LIBAV_INCLUDE_DEST}/lib${_name}")
 endforeach()
 
 #target_link_libraries(libav_wrap -Wl,--whole-archive ${LIBAV_LIBS} -Wl,--no-whole-archive)
-add_dependencies(libav_wrap libav_trunk)
+add_dependencies(libav_wrap libav_trunk ${LIBAV_COMPONENTS})
 target_link_libraries(libav_wrap ${LIBAV_LIBS})
 
 install(TARGETS libav_wrap
