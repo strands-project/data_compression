@@ -7,7 +7,7 @@ import rospy
 
 import actionlib
 from actionlib_msgs.msg import GoalStatus
-from mongodb_openni_compression.msg import RecordCameraAction, RecordCameraResult, RecordCameraFeedback
+from rosbag_openni_compression.msg import RosbagRecordCameraAction, RosbagRecordCameraResult, RosbagRecordCameraFeedback
 from roslaunch_axserver.msg import launchAction, launchGoal, launchResult, launchFeedback
 
 class RecordServer(object):
@@ -19,7 +19,7 @@ class RecordServer(object):
         rospy.loginfo("Waiting for roslaunch action...") 
         self.roslaunch_axclient.wait_for_server()
         rospy.loginfo("Done") 
-        self.server = actionlib.ActionServer(name, RecordCameraAction, self.execute_cb, self.cancel_cb)
+        self.server = actionlib.ActionServer(name, RosbagRecordCameraAction, self.execute_cb, self.cancel_cb)
         self.server.start()
         rospy.loginfo("/rosbag_record_camera action server started...")
 
@@ -30,7 +30,7 @@ class RecordServer(object):
         self.gh = None
         
     def feedback_cb(self, feedback):
-        myfeedback = RecordCameraFeedback()
+        myfeedback = RosbagRecordCameraFeedback()
         myfeedback.ready = feedback.ready
         self.gh.publish_feedback(feedback)
         
