@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="roslaunch_axserver" type="roslaunch_server.py" name="record_roslaunch_axserver" output="screen"/>
+    <node pkg="rosbag_openni_compression" type="rosbag_record_server.py" name="rosbag_record_camera" output="screen"/>
+</launch>

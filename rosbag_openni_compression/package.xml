@@ -29,10 +29,21 @@
   <!-- Dependencies can be catkin packages or system dependencies -->
   <!-- Examples: -->
   <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>actionlib</build_depend>
+  <build_depend>actionlib_msgs</build_depend>
+  <build_depend>rospy</build_depend>
+
   <run_depend>rosbag</run_depend>
   <run_depend>libav_image_transport</run_depend>
   <run_depend>image_transport_plugins</run_depend>
   <run_depend>openni_wrapper</run_depend>
+  <run_depend>message_runtime</run_depend>
+  <run_depend>actionlib</run_depend>
+  <run_depend>actionlib_msgs</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>roslaunch_axserver</run_depend>
+
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
