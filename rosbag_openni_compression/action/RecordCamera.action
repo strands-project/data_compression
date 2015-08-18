@@ -1,0 +1,9 @@
+# the time to wait until
+string camera
+string bagfile
+bool with_depth
+bool with_rgb
+---
+---
+# feedback message
+bool ready
