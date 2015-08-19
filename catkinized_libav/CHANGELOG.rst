@@ -2,8 +2,8 @@
 Changelog for package catkinized_libav
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.10 (2015-08-19)
+-------------------
 * After some hackery this works again for both devel and install builds
 * Contributors: Nils Bore
 

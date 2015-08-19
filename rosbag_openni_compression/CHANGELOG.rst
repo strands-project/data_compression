@@ -2,8 +2,8 @@
 Changelog for package rosbag_openni_compression
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.10 (2015-08-19)
+-------------------
 * Calling the correct node
 * Renamed action
 * Fixed typo
