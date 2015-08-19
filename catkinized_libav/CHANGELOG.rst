@@ -2,6 +2,11 @@
 Changelog for package catkinized_libav
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* After some hackery this works again for both devel and install builds
+* Contributors: Nils Bore
+
 0.0.9 (2015-02-25)
 ------------------
 * removed the external libraries to be expected
