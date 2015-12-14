@@ -2,6 +2,9 @@
 Changelog for package libav_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.1.0 (2015-12-14)
 ------------------
 
