@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>rosbag_openni_compression</name>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
   <description>Launch files for storing compressed OpenNI topics in rosbag.</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
