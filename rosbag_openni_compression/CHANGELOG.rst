@@ -2,8 +2,8 @@
 Changelog for package rosbag_openni_compression
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.11 (2015-12-14)
+-------------------
 * Changed default rgb compression for rosbag and added compression launch parameters
 * Contributors: Nils Bore
 
