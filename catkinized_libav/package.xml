@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>catkinized_libav</name>
-  <version>0.0.11</version>
+  <version>0.1.0</version>
   <description>Installs a catkin wrapper of LibAV v9.8</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
